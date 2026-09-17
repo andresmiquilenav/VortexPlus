@@ -1,0 +1,13 @@
+{
+  "name": "vortex-plus",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VORTEX + — Calculadora de precio de venta (costo, transporte, IVA, factor, precio objetivo, módulo Material de Construcción).",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "npx serve .",
+    "build": "echo 'Sitio estático: no hay paso de build.'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
