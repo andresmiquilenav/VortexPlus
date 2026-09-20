@@ -14,6 +14,14 @@ encabezado como en la pantalla de acceso) para que la app funcione de forma aut�
 sin rutas a assets externos; además se incluye el archivo original en
 `assets/isotipo-vortex.webp` como respaldo de marca.
 
+## Navegación
+
+No hay pestañas visibles. Los tres módulos (General, Material de Construcción,
+Transporte) se abren exclusivamente mediante las tres burbujas negro mate con íconos
+rojos (tuerca, carretilla, camión). En pantallas de 1300px de ancho o más quedan fijas
+en una columna vertical a la izquierda; por debajo de ese ancho se muestran en una fila
+horizontal bajo la firma del desarrollador.
+
 ## Acceso
 
 La app muestra primero una pantalla de login. Credenciales:
@@ -67,10 +75,12 @@ npx serve .
   (`fonts.googleapis.com` / `fonts.gstatic.com`), estándar y accesibles desde cualquier
   hosting, incluido Vercel.
 - Los datos que ingresa el usuario en General, Material de Construcción y Transporte
-  (costo, factor, lista de productos, totales de factura, etc.) se guardan en
-  `localStorage` del navegador, por lo que persisten entre visitas pero son privados de
-  cada dispositivo/navegador. El acceso (login) no se guarda: es solo por sesión de
-  página.
+  (costo, factor, lista de productos, totales de factura, la preferencia de sonido del
+  potenciómetro, etc.) se guardan en `localStorage` del navegador, por lo que persisten
+  entre visitas pero son privados de cada dispositivo/navegador. El acceso (login) no se
+  guarda: es solo por sesión de página.
+- Los dos potenciómetros (General y Material de Construcción) usan Web Audio API para
+  el clic al girar; el sonido arranca apagado y se activa con el botón 🔊/🔇.
 - No hay backend, API keys ni variables de entorno involucradas. Las credenciales de
   acceso están fijas en el código del lado del cliente — es una barrera visual, no un
   sistema de autenticación real.

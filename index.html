@@ -53,29 +53,35 @@
   }
 
   /* ---------- encabezado con isotipo ---------- */
-  header{display:flex;align-items:center;gap:14px}
+  header{
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    gap:8px;position:relative;
+  }
   header .mark{
-    width:72px;height:72px;flex:0 0 auto;
+    width:84px;height:84px;flex:0 0 auto;
     border-radius:50%;
     background:#000;
-    box-shadow:0 0 0 1px var(--rule-bright), 0 0 30px -4px var(--glow);
+    box-shadow:0 0 0 1px var(--rule-bright), 0 0 34px -4px var(--glow);
     overflow:hidden;
   }
   header .mark img{width:100%;height:100%;object-fit:contain;display:block}
-  header .head-text{min-width:0}
   header h1{
     font-family:"Zilla Slab",Georgia,serif;
     font-weight:700;
-    font-size:1.55rem;
+    font-size:1.7rem;
     line-height:1.1;
-    margin:0 0 4px;
+    margin:8px 0 0;
     letter-spacing:-.01em;
   }
   header h1 .plus{color:var(--red-1)}
   header p.slogan{margin:0;color:var(--ink-soft);font-size:.9rem;font-style:italic;max-width:46ch}
+  header p.dev-credit{
+    margin:2px 0 0;color:var(--red-1);font-size:.76rem;font-weight:600;
+    letter-spacing:.02em;
+  }
 
   /* ---------- pestañas ---------- */
-  .tabs{display:flex;margin-top:20px;border-bottom:1px solid var(--rule);gap:4px}
+  .tabs{display:none}
   .tabs button{
     font:inherit;font-size:.94rem;font-weight:600;
     background:transparent;border:0;border-bottom:2px solid transparent;
@@ -84,6 +90,57 @@
   }
   .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--red-1)}
   .tabs button:hover{color:var(--ink)}
+
+  /* ---------- burbujas de navegación: única forma de moverse entre módulos ---------- */
+  .float-icons{display:flex;justify-content:center;gap:16px;margin-top:16px}
+  .float-icon-wrap{position:static}
+  .float-icon{
+    width:42px;height:42px;border-radius:50%;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(155deg, #201f1f, #0b0a0a);
+    border:1px solid rgba(255,255,255,.05);color:var(--red-1);
+    cursor:pointer;font:inherit;padding:0;
+    box-shadow:0 8px 16px -10px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.04);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .float-icon .dash-icon{
+    width:19px;height:19px;fill:none;stroke:var(--red-1);stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
+  .float-icon:hover, .float-icon:focus-visible{
+    transform:scale(1.08);
+    box-shadow:0 12px 22px -8px rgba(0,0,0,.9), 0 0 16px -3px var(--glow);
+  }
+  .float-icon:focus-visible{outline:2px solid var(--red-1);outline-offset:3px}
+  .float-icon.active{
+    box-shadow:0 8px 16px -10px rgba(0,0,0,.85), 0 0 0 2px var(--red-1), 0 0 14px -3px var(--glow);
+  }
+
+  @media (min-width:1300px){
+    .float-icons{
+      position:fixed;left:22px;top:50%;transform:translateY(-50%);
+      flex-direction:column;gap:22px;margin-top:0;z-index:40;
+    }
+    .float-icon{width:52px;height:52px}
+    .float-icon .dash-icon{width:22px;height:22px}
+  }
+
+  /* ---------- tooltip de las burbujas: portal en <body>, fuera de cualquier stacking context ---------- */
+  #global-tooltip{
+    position:fixed;top:0;left:0;
+    z-index:99999;
+    background:var(--surface-2);border:1px solid var(--rule-bright);
+    color:var(--ink-soft);font-size:.66rem;font-weight:600;letter-spacing:.01em;
+    padding:4px 9px;border-radius:2px;white-space:nowrap;
+    opacity:0;transform:translateY(4px);
+    pointer-events:none;
+    transition:opacity .12s ease, transform .12s ease;
+    will-change:opacity, transform;
+  }
+  #global-tooltip.visible{opacity:1;transform:translateY(0)}
+  @media (prefers-reduced-motion:reduce){
+    #global-tooltip{transition:opacity .01s linear}
+  }
 
   /* ---------- tarjetas: corte angular tomado del filo del trazo del isotipo ---------- */
   .sheet{
@@ -134,6 +191,12 @@
   .sheet-head h2{
     font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.02rem;margin:0;
     letter-spacing:.01em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-icon{
+    width:19px;height:19px;flex:0 0 auto;
+    fill:none;stroke:var(--red-1);stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round;
   }
   .sheet-head span{font-size:.78rem;color:var(--ink-soft)}
   .sheet-head-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -145,6 +208,14 @@
   }
   .reset-btn:hover{color:var(--red-1)}
   .reset-btn:focus-visible{outline:2px solid var(--red-1);outline-offset:3px}
+  .sound-btn{
+    font-size:1rem;line-height:1;background:transparent;border:1px solid var(--rule-bright);
+    border-radius:999px;width:30px;height:30px;cursor:pointer;color:var(--ink-soft);
+    display:inline-flex;align-items:center;justify-content:center;padding:0;
+  }
+  .sound-btn:hover{border-color:var(--red-1);color:var(--red-1)}
+  .sound-btn[aria-pressed="true"]{color:var(--red-1);border-color:var(--red-1)}
+  .sound-btn:focus-visible{outline:2px solid var(--red-1);outline-offset:2px}
 
   /* ---------- líneas de datos ---------- */
   /* costo: segundo nivel de jerarquía, punto de partida del cálculo */
@@ -321,6 +392,25 @@
   input[type="range"]::-moz-range-track{height:4px;border-radius:999px;background:var(--rule-bright)}
   .ticks{display:flex;justify-content:space-between;font-size:.72rem;color:var(--ink-soft);margin-top:8px}
 
+  /* ---------- potenciómetro: perilla metálica realista de "ESCENARIOS" ---------- */
+  .knob-panel{padding:16px 18px 6px;text-align:center}
+  .knob-panel .ticks{padding:0 4px;margin-top:12px}
+  .knob-wrap{position:relative;display:inline-flex;margin-bottom:2px}
+  .knob{cursor:grab;touch-action:none;user-select:none}
+  .knob:active{cursor:grabbing}
+  .knob-knurl{stroke:rgba(255,255,255,.16);stroke-width:1.4;stroke-linecap:round}
+  .knob:focus-visible{outline:2px solid var(--red-1);outline-offset:6px}
+  .knob:focus-visible ~ .knob-readout .knob-value{color:var(--red-1)}
+  .knob-readout{margin-top:8px}
+  .knob-label{
+    display:block;font-size:.64rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--red-1);margin-bottom:2px;
+  }
+  .knob-value{
+    display:block;font-family:"Zilla Slab",Georgia,serif;font-weight:700;font-size:1.9rem;
+    color:var(--ink);letter-spacing:-.02em;line-height:1;
+  }
+
   .chips{display:flex;gap:8px;justify-content:center;padding:0 18px 18px}
   .chip{
     font:inherit;font-family:"Zilla Slab",Georgia,serif;font-size:1rem;font-weight:600;
@@ -379,10 +469,6 @@
 
   footer{margin-top:28px;font-size:.82rem;color:var(--ink-soft);max-width:52ch;padding-left:2px}
   footer p{margin:0 0 8px}
-  footer .credit{
-    margin-top:16px;padding-top:14px;border-top:1px solid var(--rule);
-    color:var(--red-1);font-weight:600;font-size:.8rem;letter-spacing:.01em;
-  }
 
   .toast{
     position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
@@ -464,8 +550,8 @@
     .line .leader{display:none}
     .line label{flex:1 1 60%}
     th,td .cell,td.name input,td.cost input{padding-left:12px;padding-right:12px}
-    header .mark{width:58px;height:58px}
-    header h1{font-size:1.32rem}
+    header .mark{width:64px;height:64px}
+    header h1{font-size:1.4rem}
     .tabs{overflow-x:auto}
     .tabs button{padding:10px 10px;font-size:.88rem}
   }
@@ -533,9 +619,26 @@ document.addEventListener('DOMContentLoaded', function(){
 
   <header>
     <div class="mark"><img src="data:image/webp;base64,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" alt="Isotipo VORTEX +"></div>
-    <div class="head-text">
-      <h1>VORTEX <span class="plus">+</span></h1>
-      <p class="slogan">Con Vortex, más fácil... Siempre es posible.</p>
+    <h1>VORTEX <span class="plus">+</span></h1>
+    <p class="slogan">Con Vortex, más fácil... Siempre es posible.</p>
+    <p class="dev-credit">Desarrollado por Andrés Miquilena, CEO Vortex +</p>
+
+    <div class="float-icons">
+      <div class="float-icon-wrap pos-a">
+        <button type="button" class="float-icon" data-goto="calc" data-tip="GENERAL" aria-label="Ir a General">
+          <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 L20 7 L20 17 L12 21.5 L4 17 L4 7 Z"/><circle cx="12" cy="12" r="4"/></svg>
+        </button>
+      </div>
+      <div class="float-icon-wrap pos-b">
+        <button type="button" class="float-icon" data-goto="const" data-tip="MATERIAL DE CONSTRUCCIÓN" aria-label="Ir a Material de Construcción">
+          <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.2"/><path d="M8.5 17.5 L17.5 17.5 L20 9.5 L9.5 9.5 Z"/><path d="M9.5 9.5 L6.5 15.5"/><path d="M17.5 17.5 L21.5 20.5"/><path d="M14.5 17.5 L18.5 20.5"/><path d="M19 17.5 L19.3 20"/></svg>
+        </button>
+      </div>
+      <div class="float-icon-wrap pos-c">
+        <button type="button" class="float-icon" data-goto="transporte" data-tip="TRANSPORTE" aria-label="Ir a Transporte">
+          <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="10" width="9" height="6"/><path d="M11.5 12h3l3 3v1h-6z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="15" cy="17.5" r="1.6"/><path d="M11.5 16h5"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -551,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function(){
   <div class="general-layout">
   <div class="gl-main">
   <section class="sheet">
-    <div class="sheet-head"><h2>GENERAL</h2><button type="button" class="reset-btn" id="reset-general">🗑 Eliminar todo</button></div>
+    <div class="sheet-head"><h2><svg class="section-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 L20 7 L20 17 L12 21.5 L4 17 L4 7 Z"/><circle cx="12" cy="12" r="4"/></svg>GENERAL</h2><button type="button" class="reset-btn" id="reset-general">🗑 Eliminar todo</button></div>
 
     <div class="line line-costo" id="l-costo">
       <label for="costo">Costo
@@ -620,11 +723,56 @@ document.addEventListener('DOMContentLoaded', function(){
 
   <div class="gl-side">
   <section class="sheet">
-    <div class="sheet-head"><h2>¿Qué pasa si?</h2><span>mueve el factor</span></div>
-    <div class="slider-wrap">
-      <span class="big" id="slider-valor">0,70</span>
-      <input type="range" id="factor-slider" min="0.50" max="0.90" step="0.01" value="0.70" aria-label="Factor">
-      <div class="ticks"><span>0,50</span><span>0,60</span><span>0,70</span><span>0,80</span><span>0,90</span></div>
+    <div class="sheet-head">
+      <h2>ESCENARIOS</h2>
+      <button type="button" class="sound-btn" id="sound-toggle" aria-pressed="false" aria-label="Sonido del potenciómetro desactivado">🔇</button>
+    </div>
+    <div class="knob-panel">
+      <div class="knob-wrap">
+        <svg class="knob" id="knob" viewBox="0 0 156 156" width="156" height="156"
+             role="slider" tabindex="0" aria-label="Factor"
+             aria-valuemin="0.5" aria-valuemax="0.9" aria-valuenow="0.7" aria-valuetext="0,70">
+          <defs>
+            <radialGradient id="knobFace" cx="38%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#3c3c3e"/>
+              <stop offset="28%" stop-color="#28282a"/>
+              <stop offset="55%" stop-color="#1a1a1b"/>
+              <stop offset="80%" stop-color="#111112"/>
+              <stop offset="100%" stop-color="#0a0a0a"/>
+            </radialGradient>
+            <linearGradient id="knobEdge" x1="15%" y1="8%" x2="85%" y2="95%">
+              <stop offset="0%" stop-color="#2c2c2e"/>
+              <stop offset="45%" stop-color="#0a0a0a"/>
+              <stop offset="55%" stop-color="#060606"/>
+              <stop offset="100%" stop-color="#242426"/>
+            </linearGradient>
+            <radialGradient id="knobShine" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity=".5"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="knobShadowBlur" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3"/>
+            </filter>
+          </defs>
+          <circle cx="79" cy="83" r="53" fill="#000" opacity=".38" filter="url(#knobShadowBlur)"></circle>
+          <circle cx="78" cy="78" r="58" fill="url(#knobEdge)"></circle>
+          <g id="knob-ticks"></g>
+          <circle cx="78" cy="78" r="48" fill="url(#knobFace)" stroke="#000" stroke-width="1"></circle>
+          <ellipse cx="63" cy="59" rx="27" ry="18" fill="url(#knobShine)" opacity=".14"></ellipse>
+          <g id="knob-indicator">
+            <line x1="78" y1="46" x2="78" y2="29" stroke="#e4e5e8" stroke-width="4.2" stroke-linecap="round"></line>
+            <line x1="78" y1="45" x2="78" y2="31" stroke="#000000" stroke-opacity=".35" stroke-width="1.6" stroke-linecap="round"></line>
+            <circle cx="78" cy="29" r="2.6" fill="var(--red-1)"></circle>
+          </g>
+          <circle cx="78" cy="78" r="7.5" fill="#1c1c1c" stroke="#000" stroke-width="1"></circle>
+          <circle cx="76" cy="76" r="2" fill="#333335"></circle>
+        </svg>
+        <div class="knob-readout">
+          <span class="knob-label">Factor</span>
+          <span class="knob-value" id="slider-valor">0,70</span>
+        </div>
+      </div>
+      <div class="ticks"><span>0,50</span><span>0,70</span><span>0,90</span></div>
     </div>
     <div class="note" id="slider-nota">Con factor 0,70 el valor de venta es $2.700.</div>
   </section>
@@ -709,7 +857,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   <section class="sheet">
     <div class="sheet-head">
-      <h2>MATERIAL DE CONSTRUCCIÓN</h2>
+      <h2><svg class="section-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.2"/><path d="M8.5 17.5 L17.5 17.5 L20 9.5 L9.5 9.5 Z"/><path d="M9.5 9.5 L6.5 15.5"/><path d="M17.5 17.5 L21.5 20.5"/><path d="M14.5 17.5 L18.5 20.5"/><path d="M19 17.5 L19.3 20"/></svg>MATERIAL DE CONSTRUCCIÓN</h2>
       <div class="sheet-head-actions">
         <span>factor 0,75 a 0,80</span>
         <button type="button" class="reset-btn" id="reset-const">🗑 Eliminar todo</button>
@@ -746,11 +894,53 @@ document.addEventListener('DOMContentLoaded', function(){
     </div>
     </div>
 
-    <div class="slider-wrap">
-      <p class="eyebrow" style="margin:0 0 6px;font-size:.95rem;font-weight:600">Factor construcción</p>
-      <span class="big" id="const-valor">0,78</span>
-      <input type="range" id="const-slider" min="0.75" max="0.80" step="0.01" value="0.78" aria-label="Factor construcción">
-      <div class="ticks"><span>0,75</span><span>0,76</span><span>0,77</span><span>0,78</span><span>0,79</span><span>0,80</span></div>
+    <input type="hidden" id="const-slider" value="0.78">
+    <div class="knob-panel">
+      <div class="knob-wrap">
+        <svg class="knob" id="knob-const" viewBox="0 0 156 156" width="156" height="156"
+             role="slider" tabindex="0" aria-label="Factor construcción"
+             aria-valuemin="0.75" aria-valuemax="0.80" aria-valuenow="0.78" aria-valuetext="0,78">
+          <defs>
+            <radialGradient id="knobFaceC" cx="38%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#3c3c3e"/>
+              <stop offset="28%" stop-color="#28282a"/>
+              <stop offset="55%" stop-color="#1a1a1b"/>
+              <stop offset="80%" stop-color="#111112"/>
+              <stop offset="100%" stop-color="#0a0a0a"/>
+            </radialGradient>
+            <linearGradient id="knobEdgeC" x1="15%" y1="8%" x2="85%" y2="95%">
+              <stop offset="0%" stop-color="#2c2c2e"/>
+              <stop offset="45%" stop-color="#0a0a0a"/>
+              <stop offset="55%" stop-color="#060606"/>
+              <stop offset="100%" stop-color="#242426"/>
+            </linearGradient>
+            <radialGradient id="knobShineC" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity=".5"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="knobShadowBlurC" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3"/>
+            </filter>
+          </defs>
+          <circle cx="79" cy="83" r="53" fill="#000" opacity=".38" filter="url(#knobShadowBlurC)"></circle>
+          <circle cx="78" cy="78" r="58" fill="url(#knobEdgeC)"></circle>
+          <g id="knob-const-ticks"></g>
+          <circle cx="78" cy="78" r="48" fill="url(#knobFaceC)" stroke="#000" stroke-width="1"></circle>
+          <ellipse cx="63" cy="59" rx="27" ry="18" fill="url(#knobShineC)" opacity=".14"></ellipse>
+          <g id="knob-const-indicator">
+            <line x1="78" y1="46" x2="78" y2="29" stroke="#e4e5e8" stroke-width="4.2" stroke-linecap="round"></line>
+            <line x1="78" y1="45" x2="78" y2="31" stroke="#000000" stroke-opacity=".35" stroke-width="1.6" stroke-linecap="round"></line>
+            <circle cx="78" cy="29" r="2.6" fill="var(--red-1)"></circle>
+          </g>
+          <circle cx="78" cy="78" r="7.5" fill="#1c1c1c" stroke="#000" stroke-width="1"></circle>
+          <circle cx="76" cy="76" r="2" fill="#333335"></circle>
+        </svg>
+        <div class="knob-readout">
+          <span class="knob-label">Factor</span>
+          <span class="knob-value" id="const-valor">0,78</span>
+        </div>
+      </div>
+      <div class="ticks"><span>0,75</span><span>0,78</span><span>0,80</span></div>
     </div>
     <div class="chips">
       <button type="button" class="chip" data-f="0.78">0,78</button>
@@ -773,7 +963,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   <section class="sheet">
     <div class="sheet-head">
-      <h2>TRANSPORTE</h2>
+      <h2><svg class="section-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="10" width="9" height="6"/><path d="M11.5 12h3l3 3v1h-6z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="15" cy="17.5" r="1.6"/><path d="M11.5 16h5"/></svg>TRANSPORTE</h2>
       <button type="button" class="reset-btn" id="reset-transporte">🗑 Eliminar todo</button>
     </div>
 
@@ -811,7 +1001,6 @@ document.addEventListener('DOMContentLoaded', function(){
   <footer>
     <p>El factor se usa directamente como divisor: costo × (1 + transporte) × 1,19 ÷ factor. Mientras más bajo el factor, más alto el precio de venta.</p>
     <p>El valor de venta final nunca queda por debajo del precio calculado.</p>
-    <p class="credit">Desarrollado por Andrés Miquilena, Vortex +</p>
   </footer>
 </div>
 
@@ -825,13 +1014,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
   var IVA = 0.19;            // tasa fija
   var C_MIN = 0.75, C_MAX = 0.80;   // rango bloqueado de Construcción
+  var KNOB_MIN = 0.50, KNOB_MAX = 0.90;   // rango del potenciómetro
+  var KNOB_ANGLE_MIN = -132, KNOB_ANGLE_MAX = 132; // barrido en grados (12 en punto = 0)
 
   var $ = function(id){ return document.getElementById(id); };
   var inCosto=$('costo'), inTransporte=$('transporte'), inFactor=$('factor'),
       chkIva=$('iva'), chkPsico=$('psico'), selRedondeo=$('redondeo'),
-      rngFactor=$('factor-slider'), inObjetivo=$('objetivo'), tbody=$('filas');
+      knob=$('knob'), knobTicks=$('knob-ticks'),
+      botonSonido=$('sound-toggle'), inObjetivo=$('objetivo'), tbody=$('filas');
   var inCostoC=$('costo-c'), inTransporteC=$('transporte-c'), chkIvaC=$('iva-c'),
-      rngConst=$('const-slider');
+      rngConst=$('const-slider'), knobConst=$('knob-const'), knobTicksConst=$('knob-const-ticks');
   var inTotalTransp=$('total-transporte'), inTotalProveedor=$('total-proveedor');
 
   var filas = [];
@@ -979,10 +1171,10 @@ document.addEventListener('DOMContentLoaded', function(){
     $('psico-state').textContent = chkPsico.checked ? 'ON' : 'OFF';
     $('psico-estado').textContent = chkPsico.checked ? 'ON' : 'OFF';
 
-    // deslizador sincronizado con el campo manual
+    // potenciómetro sincronizado con el campo manual
     if(p.fOk){
-      var vis = Math.min(0.90, Math.max(0.50, Math.round(p.f*100)/100));
-      if(parseFloat(rngFactor.value) !== vis) rngFactor.value = vis;
+      var vis = Math.min(KNOB_MAX, Math.max(KNOB_MIN, Math.round(p.f*100)/100));
+      actualizarKnob(vis);
       $('slider-valor').textContent = coma(p.f, 2);
     }else{
       $('slider-valor').textContent = '—';
@@ -1009,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function(){
       hero.classList.remove('invalid');
     }
 
-    // ¿qué pasa si?
+    // escenarios
     $('slider-nota').textContent = r
       ? 'Con factor ' + coma(p.f,2) + ' el valor de venta es $' + fmt0.format(r.final) + '.'
       : 'Completa el costo para ver el efecto del factor.';
@@ -1086,6 +1278,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var f = clampConst(parseFloat(rngConst.value));
     if(parseFloat(rngConst.value) !== f) rngConst.value = f;   // validación dura del rango
     $('const-valor').textContent = coma(f, 2);
+    actualizarKnobConst(f);
     $('iva-c-state').textContent = chkIvaC.checked ? 'ON' : 'OFF';
 
     Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(b){
@@ -1238,17 +1431,211 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
+  /* ---------- potenciómetro: geometría de la perilla física ---------- */
+  var KNOB_CX = 78, KNOB_CY = 78;
+  function knobPunto(r, anguloDeg){
+    var rad = anguloDeg * Math.PI/180;
+    return { x: KNOB_CX + r*Math.sin(rad), y: KNOB_CY - r*Math.cos(rad) };
+  }
+  function construirKnobTicks(){
+    var N = 40, html = '';
+    for(var i=0;i<N;i++){
+      var a = 360*i/N;
+      var p1 = knobPunto(52, a), p2 = knobPunto(58, a);
+      html += '<line class="knob-knurl" x1="'+p1.x.toFixed(2)+'" y1="'+p1.y.toFixed(2)+'" x2="'+p2.x.toFixed(2)+'" y2="'+p2.y.toFixed(2)+'"></line>';
+    }
+    knobTicks.innerHTML = html;
+  }
+  function actualizarKnob(value){
+    var deg = KNOB_ANGLE_MIN + (value-KNOB_MIN)/(KNOB_MAX-KNOB_MIN)*(KNOB_ANGLE_MAX-KNOB_ANGLE_MIN);
+    $('knob-indicator').setAttribute('transform', 'rotate('+deg.toFixed(2)+' 78 78)');
+    knob.setAttribute('aria-valuenow', value.toFixed(2));
+    knob.setAttribute('aria-valuetext', coma(value,2));
+  }
+  function construirKnobTicksConst(){
+    var N = 40, html = '';
+    for(var i=0;i<N;i++){
+      var a = 360*i/N;
+      var p1 = knobPunto(52, a), p2 = knobPunto(58, a);
+      html += '<line class="knob-knurl" x1="'+p1.x.toFixed(2)+'" y1="'+p1.y.toFixed(2)+'" x2="'+p2.x.toFixed(2)+'" y2="'+p2.y.toFixed(2)+'"></line>';
+    }
+    knobTicksConst.innerHTML = html;
+  }
+  function actualizarKnobConst(value){
+    var deg = KNOB_ANGLE_MIN + (value-C_MIN)/(C_MAX-C_MIN)*(KNOB_ANGLE_MAX-KNOB_ANGLE_MIN);
+    $('knob-const-indicator').setAttribute('transform', 'rotate('+deg.toFixed(2)+' 78 78)');
+    knobConst.setAttribute('aria-valuenow', value.toFixed(2));
+    knobConst.setAttribute('aria-valuetext', coma(value,2));
+  }
+
+  /* ---------- sonido de clic (Web Audio API) ---------- */
+  var SOUND_KEY = 'vortex-sonido';
+  var sonidoActivo = false;
+  try{ sonidoActivo = localStorage.getItem(SOUND_KEY) === '1'; }catch(e){}
+  var audioCtx = null;
+  var ultimoSonidoTs = 0;
+  function asegurarAudio(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+    }else if(audioCtx.state === 'suspended'){
+      audioCtx.resume();
+    }
+  }
+  function reproducirClick(){
+    if(!sonidoActivo || !audioCtx) return;
+    var ahora = performance.now();
+    if(ahora - ultimoSonidoTs < 25) return;   // evita acumulación de clics
+    ultimoSonidoTs = ahora;
+    var t0 = audioCtx.currentTime;
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1700, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(0.05, t0 + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.03);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t0); osc.stop(t0 + 0.04);
+  }
+  function actualizarBotonSonido(){
+    botonSonido.textContent = sonidoActivo ? '🔊' : '🔇';
+    botonSonido.setAttribute('aria-pressed', sonidoActivo ? 'true' : 'false');
+    botonSonido.setAttribute('aria-label', sonidoActivo ? 'Sonido del potenciómetro activado' : 'Sonido del potenciómetro desactivado');
+  }
+  botonSonido.addEventListener('click', function(){
+    sonidoActivo = !sonidoActivo;
+    if(sonidoActivo) asegurarAudio();
+    try{ localStorage.setItem(SOUND_KEY, sonidoActivo ? '1' : '0'); }catch(e){}
+    actualizarBotonSonido();
+  });
+
+  /* ---------- potenciómetro rotatorio: interacción ---------- */
+  var arrastrandoKnob = false;
+  var ultimoValorKnob = null;
+  function commitKnobValue(value){
+    value = Math.round(value*100)/100;
+    value = Math.min(KNOB_MAX, Math.max(KNOB_MIN, value));
+    if(ultimoValorKnob !== null && Math.abs(value-ultimoValorKnob) >= 0.005){
+      reproducirClick();
+    }
+    ultimoValorKnob = value;
+    inFactor.value = coma(value, 2);
+    render();
+  }
+  function anguloDesdePuntero(e){
+    var rect = knob.getBoundingClientRect();
+    var cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    var dx = e.clientX - cx, dy = e.clientY - cy;
+    var deg = Math.atan2(dx, -dy) * 180/Math.PI;
+    if(deg > KNOB_ANGLE_MAX) deg = KNOB_ANGLE_MAX;
+    if(deg < KNOB_ANGLE_MIN) deg = KNOB_ANGLE_MIN;
+    return deg;
+  }
+  function valorDesdeAngulo(deg){
+    return KNOB_MIN + (deg-KNOB_ANGLE_MIN)/(KNOB_ANGLE_MAX-KNOB_ANGLE_MIN)*(KNOB_MAX-KNOB_MIN);
+  }
+  function valorActualFactor(){
+    var v = num(inFactor);
+    return isFinite(v) ? v : 0.70;
+  }
+  knob.addEventListener('pointerdown', function(e){
+    asegurarAudio();
+    arrastrandoKnob = true;
+    ultimoValorKnob = valorActualFactor();
+    try{ knob.setPointerCapture(e.pointerId); }catch(err){}
+    commitKnobValue(valorDesdeAngulo(anguloDesdePuntero(e)));
+    e.preventDefault();
+  });
+  knob.addEventListener('pointermove', function(e){
+    if(!arrastrandoKnob) return;
+    commitKnobValue(valorDesdeAngulo(anguloDesdePuntero(e)));
+  });
+  window.addEventListener('pointerup', function(){ arrastrandoKnob = false; });
+  window.addEventListener('pointercancel', function(){ arrastrandoKnob = false; });
+  knob.addEventListener('keydown', function(e){
+    asegurarAudio();
+    var actual = valorActualFactor();
+    if(e.key === 'ArrowUp' || e.key === 'ArrowRight'){ ultimoValorKnob = actual; commitKnobValue(actual + 0.01); e.preventDefault(); }
+    else if(e.key === 'ArrowDown' || e.key === 'ArrowLeft'){ ultimoValorKnob = actual; commitKnobValue(actual - 0.01); e.preventDefault(); }
+    else if(e.key === 'Home'){ ultimoValorKnob = actual; commitKnobValue(KNOB_MIN); e.preventDefault(); }
+    else if(e.key === 'End'){ ultimoValorKnob = actual; commitKnobValue(KNOB_MAX); e.preventDefault(); }
+  });
+  knob.addEventListener('wheel', function(e){
+    e.preventDefault();
+    asegurarAudio();
+    var actual = valorActualFactor();
+    ultimoValorKnob = actual;
+    commitKnobValue(actual + (e.deltaY < 0 ? 0.01 : -0.01));
+  }, {passive:false});
+
+  /* ---------- potenciómetro de Construcción: mismo mecanismo, rango 0,75-0,80 ---------- */
+  var arrastrandoKnobC = false;
+  var ultimoValorKnobC = null;
+  function commitKnobValueConst(value){
+    var v = clampConst(value);
+    if(ultimoValorKnobC !== null && Math.abs(v-ultimoValorKnobC) >= 0.005){
+      reproducirClick();
+    }
+    ultimoValorKnobC = v;
+    rngConst.value = v;
+    renderConst();
+  }
+  function anguloDesdePunteroC(e){
+    var rect = knobConst.getBoundingClientRect();
+    var cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    var dx = e.clientX - cx, dy = e.clientY - cy;
+    var deg = Math.atan2(dx, -dy) * 180/Math.PI;
+    if(deg > KNOB_ANGLE_MAX) deg = KNOB_ANGLE_MAX;
+    if(deg < KNOB_ANGLE_MIN) deg = KNOB_ANGLE_MIN;
+    return deg;
+  }
+  function valorDesdeAnguloC(deg){
+    return C_MIN + (deg-KNOB_ANGLE_MIN)/(KNOB_ANGLE_MAX-KNOB_ANGLE_MIN)*(C_MAX-C_MIN);
+  }
+  function valorActualFactorC(){
+    var v = clampConst(parseFloat(rngConst.value));
+    return isFinite(v) ? v : 0.78;
+  }
+  knobConst.addEventListener('pointerdown', function(e){
+    asegurarAudio();
+    arrastrandoKnobC = true;
+    ultimoValorKnobC = valorActualFactorC();
+    try{ knobConst.setPointerCapture(e.pointerId); }catch(err){}
+    commitKnobValueConst(valorDesdeAnguloC(anguloDesdePunteroC(e)));
+    e.preventDefault();
+  });
+  knobConst.addEventListener('pointermove', function(e){
+    if(!arrastrandoKnobC) return;
+    commitKnobValueConst(valorDesdeAnguloC(anguloDesdePunteroC(e)));
+  });
+  window.addEventListener('pointerup', function(){ arrastrandoKnobC = false; });
+  window.addEventListener('pointercancel', function(){ arrastrandoKnobC = false; });
+  knobConst.addEventListener('keydown', function(e){
+    asegurarAudio();
+    var actual = valorActualFactorC();
+    if(e.key === 'ArrowUp' || e.key === 'ArrowRight'){ ultimoValorKnobC = actual; commitKnobValueConst(actual + 0.01); e.preventDefault(); }
+    else if(e.key === 'ArrowDown' || e.key === 'ArrowLeft'){ ultimoValorKnobC = actual; commitKnobValueConst(actual - 0.01); e.preventDefault(); }
+    else if(e.key === 'Home'){ ultimoValorKnobC = actual; commitKnobValueConst(C_MIN); e.preventDefault(); }
+    else if(e.key === 'End'){ ultimoValorKnobC = actual; commitKnobValueConst(C_MAX); e.preventDefault(); }
+  });
+  knobConst.addEventListener('wheel', function(e){
+    e.preventDefault();
+    asegurarAudio();
+    var actual = valorActualFactorC();
+    ultimoValorKnobC = actual;
+    commitKnobValueConst(actual + (e.deltaY < 0 ? 0.01 : -0.01));
+  }, {passive:false});
+
+  construirKnobTicks();
+  construirKnobTicksConst();
+  actualizarBotonSonido();
+
   /* ---------- eventos ---------- */
   [inCosto,inTransporte,inFactor,inObjetivo].forEach(function(el){
     el.addEventListener('input', render);
   });
   [chkIva,chkPsico].forEach(function(el){ el.addEventListener('change', render); });
   selRedondeo.addEventListener('change', render);
-
-  rngFactor.addEventListener('input', function(){
-    inFactor.value = coma(parseFloat(rngFactor.value), 2);
-    render();
-  });
 
   $('usar-factor').addEventListener('click', function(){
     var res = factorNecesario();
@@ -1368,10 +1755,75 @@ document.addEventListener('DOMContentLoaded', function(){
       $(PANELES[k]).hidden = (k !== cual);
       $(BOTONES[k]).setAttribute('aria-selected', (k === cual) ? 'true' : 'false');
     });
+    Array.prototype.forEach.call(document.querySelectorAll('.float-icon'), function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-goto') === cual);
+    });
   }
   $('tab-btn-calc').addEventListener('click', function(){ verPestana('calc'); });
   $('tab-btn-const').addEventListener('click', function(){ verPestana('const'); renderConst(); });
   $('tab-btn-transporte').addEventListener('click', function(){ verPestana('transporte'); renderTransporte(); });
+
+  // burbujas de navegación: única forma de moverse entre módulos
+  Array.prototype.forEach.call(document.querySelectorAll('.float-icon'), function(btn){
+    btn.addEventListener('click', function(){
+      var destino = btn.getAttribute('data-goto');
+      verPestana(destino);
+      if(destino === 'const') renderConst();
+      if(destino === 'transporte') renderTransporte();
+    });
+  });
+
+  // tooltip de las burbujas: portal en <body>, fuera de cualquier contexto de apilamiento
+  var tooltipGlobal = document.createElement('div');
+  tooltipGlobal.id = 'global-tooltip';
+  tooltipGlobal.setAttribute('role', 'tooltip');
+  document.body.appendChild(tooltipGlobal);
+
+  function posicionarTooltip(btn){
+    var margen = 10, borde = 8;
+    var rect = btn.getBoundingClientRect();
+    var tw = tooltipGlobal.offsetWidth, th = tooltipGlobal.offsetHeight;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var columnaFija = window.matchMedia('(min-width: 1300px)').matches;
+    var left, top;
+
+    if(columnaFija){
+      // preferencia: a la derecha de la burbuja; si no cabe, a la izquierda
+      left = rect.right + margen;
+      if(left + tw > vw - borde) left = rect.left - margen - tw;
+      top = rect.top + rect.height/2 - th/2;
+    }else{
+      // preferencia: debajo de la burbuja; si no cabe, arriba
+      top = rect.bottom + margen;
+      if(top + th > vh - borde) top = rect.top - margen - th;
+      left = rect.left + rect.width/2 - tw/2;
+    }
+    if(left < borde) left = borde;
+    if(left + tw > vw - borde) left = vw - borde - tw;
+    if(top < borde) top = borde;
+    if(top + th > vh - borde) top = vh - borde - th;
+
+    tooltipGlobal.style.left = left + 'px';
+    tooltipGlobal.style.top = top + 'px';
+  }
+  function mostrarTooltip(btn){
+    var texto = btn.getAttribute('data-tip');
+    if(!texto) return;
+    tooltipGlobal.textContent = texto;
+    tooltipGlobal.classList.add('visible');
+    posicionarTooltip(btn);
+  }
+  function ocultarTooltip(){
+    tooltipGlobal.classList.remove('visible');
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.float-icon'), function(btn){
+    btn.addEventListener('mouseenter', function(){ mostrarTooltip(btn); });
+    btn.addEventListener('mouseleave', ocultarTooltip);
+    btn.addEventListener('focus', function(){ mostrarTooltip(btn); });
+    btn.addEventListener('blur', ocultarTooltip);
+  });
+  window.addEventListener('scroll', ocultarTooltip, {passive:true});
+  window.addEventListener('resize', ocultarTooltip);
 
   cargar();
   if(!filas.length) filas=[{nombre:'',costo:''},{nombre:'',costo:''},{nombre:'',costo:''}];
@@ -1379,6 +1831,7 @@ document.addEventListener('DOMContentLoaded', function(){
   render();
   renderConst();
   renderTransporte();
+  verPestana('calc');
 })();
 </script>
 </body>
