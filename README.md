@@ -3,9 +3,11 @@
 Calculadora de precio de venta: costo, transporte, IVA (ON/OFF), factor como divisor,
 redondeo comercial hacia arriba, precio psicológico, precio objetivo (cálculo inverso),
 lista de productos, el módulo **Material de Construcción** (factor bloqueado entre 0,75
-y 0,80) y una calculadora auxiliar de **Transporte** (porcentaje a partir de dos facturas,
-con transferencia de un solo uso hacia General). Incluye una pantalla de acceso inicial
-con credenciales fijas (sin backend, sin base de datos: es solo una barrera visual).
+y 0,80), una calculadora auxiliar de **Transporte** (porcentaje a partir de dos facturas,
+con transferencia de un solo uso hacia General) y el módulo **Recepción** (registro de
+productos recibidos, agrupados por recepción, con historial consultable). Incluye una
+pantalla de acceso inicial con credenciales fijas (sin backend, sin base de datos: es
+solo una barrera visual).
 
 Es un **sitio estático de un solo archivo**: no usa framework, no tiene dependencias de
 Node ni paso de build. Todo el HTML, CSS y JavaScript vive en `index.html`. El isotipo
@@ -16,11 +18,15 @@ sin rutas a assets externos; además se incluye el archivo original en
 
 ## Navegación
 
-No hay pestañas visibles. Los tres módulos (General, Material de Construcción,
-Transporte) se abren exclusivamente mediante las tres burbujas negro mate con íconos
-rojos (tuerca, carretilla, camión). En pantallas de 1300px de ancho o más quedan fijas
-en una columna vertical a la izquierda; por debajo de ese ancho se muestran en una fila
-horizontal bajo la firma del desarrollador.
+No hay pestañas visibles. Los cuatro módulos (General, Material de Construcción,
+Transporte, Recepción) se abren exclusivamente mediante las burbujas negro mate con
+íconos rojos (tuerca, carretilla, camión, documento). En pantallas de 1300px de ancho o
+más quedan fijas en una columna vertical a la izquierda; por debajo de ese ancho se
+muestran en una fila horizontal bajo la firma del desarrollador.
+
+Dentro de General, el desglose del cálculo y la lista de productos están colapsados
+detrás del botón "Ver cálculo". Dentro de Recepción hay dos vistas: "Nueva recepción"
+(para registrar productos) y "Registros" (para consultar recepciones ya guardadas).
 
 ## Acceso
 
@@ -74,11 +80,14 @@ npx serve .
 - Las únicas conexiones externas son las fuentes de Google Fonts
   (`fonts.googleapis.com` / `fonts.gstatic.com`), estándar y accesibles desde cualquier
   hosting, incluido Vercel.
-- Los datos que ingresa el usuario en General, Material de Construcción y Transporte
-  (costo, factor, lista de productos, totales de factura, la preferencia de sonido del
-  potenciómetro, etc.) se guardan en `localStorage` del navegador, por lo que persisten
-  entre visitas pero son privados de cada dispositivo/navegador. El acceso (login) no se
-  guarda: es solo por sesión de página.
+- Los datos de la app (parámetros de General/Construcción/Transporte, listas de trabajo,
+  preferencia de sonido del potenciómetro, etc.) se guardan en `localStorage` bajo la
+  clave `vortex-v4`. Las recepciones guardadas viven aparte, bajo la clave
+  `vortex-recepciones-v1`, como dos tablas relacionadas: `recepciones` (id, número,
+  fecha, fecha/hora de creación) y `productos` (id, recepcionId, producto, sku,
+  proveedor, costo, valorCalculado) — pensado para poder migrarse a una base de datos
+  real sin tocar la interfaz. El acceso (login) no se guarda: es solo por sesión de
+  página.
 - Los dos potenciómetros (General y Material de Construcción) usan Web Audio API para
   el clic al girar; el sonido arranca apagado y se activa con el botón 🔊/🔇.
 - No hay backend, API keys ni variables de entorno involucradas. Las credenciales de

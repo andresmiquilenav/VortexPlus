@@ -208,6 +208,62 @@
   }
   .reset-btn:hover{color:var(--red-1)}
   .reset-btn:focus-visible{outline:2px solid var(--red-1);outline-offset:3px}
+
+  /* ---------- ver cálculo: detalle colapsable bajo el resultado ---------- */
+  .ver-calculo-btn{
+    font:inherit;font-size:.78rem;font-weight:600;letter-spacing:.04em;
+    background:transparent;border:0;color:var(--ink-soft);
+    cursor:pointer;padding:8px 0 0;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .ver-calculo-btn:hover{color:var(--red-1)}
+  .ver-calculo-btn:focus-visible{outline:2px solid var(--red-1);outline-offset:3px}
+  .ver-calculo-btn .chev{font-size:.7rem;transition:transform .2s ease}
+  .ver-calculo-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+  .calc-details{
+    max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .35s ease, opacity .28s ease;
+  }
+  .calc-details.open{max-height:3000px;opacity:1}
+  @media (prefers-reduced-motion:reduce){
+    .calc-details{transition:none}
+    .ver-calculo-btn .chev{transition:none}
+  }
+
+  /* ---------- recepción: sub-navegación interna (Nueva recepción / Registros) ---------- */
+  .subnav{display:flex;gap:4px;padding:0 18px 14px;border-top:1px solid var(--rule)}
+  .subnav-btn{
+    font:inherit;font-size:.86rem;font-weight:600;
+    background:transparent;border:0;border-bottom:2px solid transparent;
+    color:var(--ink-soft);padding:10px 8px 0;cursor:pointer;letter-spacing:.01em;
+  }
+  .subnav-btn[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--red-1)}
+  .subnav-btn:hover{color:var(--ink)}
+  .subnav-btn:focus-visible{outline:2px solid var(--red-1);outline-offset:2px}
+
+  /* ---------- recepción: tarjetas de la lista de registros ---------- */
+  .registro-card{
+    width:100%;text-align:left;font:inherit;color:inherit;
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:14px 18px;border-bottom:1px solid var(--rule);
+    background:transparent;border-left:0;border-right:0;border-top:0;cursor:pointer;
+  }
+  .registro-card:last-child{border-bottom:0}
+  .registro-card:hover, .registro-card:focus-visible{background:var(--surface)}
+  .registro-card:focus-visible{outline:2px solid var(--red-1);outline-offset:-2px}
+  .registro-card .rc-titulo{
+    font-family:"Zilla Slab",Georgia,serif;font-weight:700;font-size:.98rem;color:var(--ink);
+  }
+  .registro-card .rc-meta{font-size:.78rem;color:var(--ink-soft);margin-top:2px}
+  .registro-card .rc-ir{color:var(--red-1);font-size:.8rem;font-weight:600;white-space:nowrap}
+
+  /* ---------- recepción: encabezado del detalle ---------- */
+  .detalle-encabezado{padding:2px 18px 14px}
+  .detalle-titulo{
+    font-family:"Zilla Slab",Georgia,serif;font-weight:700;font-size:1.15rem;
+    color:var(--ink);margin:0 0 4px;
+  }
+
   .sound-btn{
     font-size:1rem;line-height:1;background:transparent;border:1px solid var(--rule-bright);
     border-radius:999px;width:30px;height:30px;cursor:pointer;color:var(--ink-soft);
@@ -247,13 +303,14 @@
 
   .field{display:flex;align-items:center;gap:4px;flex:0 0 auto}
   .field .unit{color:var(--ink-soft);font-size:.9rem}
-  input[type="text"],input[type="number"],select{
+  input[type="text"],input[type="number"],input[type="date"],select{
     font:inherit;font-variant-numeric:tabular-nums;
     color:var(--ink);background:transparent;
     border:0;border-bottom:1.5px solid var(--rule-bright);
     padding:3px 4px;text-align:right;
     border-radius:0;
   }
+  input[type="date"]{color-scheme:dark;font-family:"Zilla Slab",Georgia,serif;font-weight:600}
   input[type="number"]{width:5.6em;-moz-appearance:textfield}
   .field input[type="text"]{width:5.6em;font-family:"Zilla Slab",Georgia,serif;font-weight:600}
   input[type="number"]::-webkit-outer-spin-button,
@@ -639,6 +696,11 @@ document.addEventListener('DOMContentLoaded', function(){
           <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="10" width="9" height="6"/><path d="M11.5 12h3l3 3v1h-6z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="15" cy="17.5" r="1.6"/><path d="M11.5 16h5"/></svg>
         </button>
       </div>
+      <div class="float-icon-wrap pos-d">
+        <button type="button" class="float-icon" data-goto="recepcion" data-tip="RECEPCIÓN" aria-label="Ir a Recepción">
+          <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7"/><path d="M9 16h7"/><path d="M9 8h3"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -646,6 +708,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <button type="button" role="tab" id="tab-btn-calc" aria-selected="true" aria-controls="tab-calc">General</button>
     <button type="button" role="tab" id="tab-btn-const" aria-selected="false" aria-controls="tab-const">Construcción</button>
     <button type="button" role="tab" id="tab-btn-transporte" aria-selected="false" aria-controls="tab-transporte">Transporte</button>
+    <button type="button" role="tab" id="tab-btn-recepcion" aria-selected="false" aria-controls="tab-recepcion">Recepción</button>
   </div>
 
   <!-- ===================== CALCULADORA ===================== -->
@@ -717,6 +780,9 @@ document.addEventListener('DOMContentLoaded', function(){
       <p class="sub" id="final-sub">Valor con IVA</p>
       <button class="btn primary" id="copiar-precio">📋 Copiar precio</button>
       <p id="factor-nota">Precio calculado $2.677,50, redondeado hacia arriba a la centena.</p>
+      <button type="button" class="ver-calculo-btn" id="ver-calculo-btn" aria-expanded="false" aria-controls="calc-details">
+        VER CÁLCULO <span class="chev">▾</span>
+      </button>
     </div>
   </section>
   </div>
@@ -814,6 +880,7 @@ document.addEventListener('DOMContentLoaded', function(){
   </div>
   </div>
 
+  <div class="calc-details" id="calc-details">
   <section class="sheet">
     <div class="sheet-head"><h2>Cómo se llegó al precio</h2><span id="formula">1.500 × 1,05 × 1,19 ÷ 0,70</span></div>
     <div class="calc">
@@ -849,6 +916,7 @@ document.addEventListener('DOMContentLoaded', function(){
       <button class="btn" id="copiar-lista">Copiar lista</button>
     </div>
   </section>
+  </div>
 
   </div>
 
@@ -998,6 +1066,83 @@ document.addEventListener('DOMContentLoaded', function(){
 
   </div>
 
+  <!-- ===================== RECEPCIÓN ===================== -->
+  <div id="tab-recepcion" role="tabpanel" aria-labelledby="tab-btn-recepcion" hidden>
+
+  <section class="sheet">
+    <div class="sheet-head">
+      <h2><svg class="section-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7"/><path d="M9 16h7"/><path d="M9 8h3"/></svg>RECEPCIÓN</h2>
+    </div>
+    <div class="subnav" role="tablist">
+      <button type="button" class="subnav-btn" id="subtab-nueva" role="tab" aria-selected="true">Nueva recepción</button>
+      <button type="button" class="subnav-btn" id="subtab-registros" role="tab" aria-selected="false">Registros</button>
+    </div>
+  </section>
+
+  <div id="vista-recepcion-nueva">
+  <section class="sheet">
+    <div class="sheet-head"><h2>Nueva recepción</h2><button type="button" class="reset-btn" id="reset-recepcion">🗑 Eliminar todo</button></div>
+
+    <div class="line">
+      <label for="fecha-recepcion">Fecha de recepción</label>
+      <span class="leader"></span>
+      <span class="field"><input type="date" id="fecha-recepcion"></span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Proveedor</th>
+          <th>Costo</th>
+          <th>Valor calculado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="filas-recepcion"></tbody>
+    </table>
+    <div id="vacio-recepcion" class="empty" hidden>Agrega un producto recibido para empezar la recepción.</div>
+    <div class="list-foot">
+      <button class="btn" id="agregar-recepcion">+ Agregar</button>
+      <button class="btn primary" id="guardar-recepcion">Guardar recepción</button>
+    </div>
+    <div class="note" id="recepcion-nota">El valor calculado usa el costo, transporte, IVA y factor actuales de General.</div>
+  </section>
+  </div>
+
+  <div id="vista-recepcion-registros" hidden>
+  <section class="sheet">
+    <div class="sheet-head"><h2>Registros</h2><span>recepciones guardadas</span></div>
+    <div id="lista-registros"></div>
+    <div id="registros-vacio" class="empty" hidden>Aún no hay recepciones guardadas.</div>
+  </section>
+  </div>
+
+  <div id="vista-recepcion-detalle" hidden>
+  <section class="sheet">
+    <div class="sheet-head">
+      <button type="button" class="reset-btn" id="volver-registros">← Volver a Registros</button>
+    </div>
+    <div class="detalle-encabezado">
+      <p class="detalle-titulo" id="detalle-titulo">RECEPCIÓN #0001</p>
+      <p class="note" id="detalle-fecha">Fecha: 21/09/2026</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Proveedor</th>
+          <th>Costo</th>
+          <th>Valor calculado</th>
+        </tr>
+      </thead>
+      <tbody id="detalle-filas"></tbody>
+    </table>
+  </section>
+  </div>
+
+  </div>
+
   <footer>
     <p>El factor se usa directamente como divisor: costo × (1 + transporte) × 1,19 ÷ factor. Mientras más bajo el factor, más alto el precio de venta.</p>
     <p>El valor de venta final nunca queda por debajo del precio calculado.</p>
@@ -1025,8 +1170,11 @@ document.addEventListener('DOMContentLoaded', function(){
   var inCostoC=$('costo-c'), inTransporteC=$('transporte-c'), chkIvaC=$('iva-c'),
       rngConst=$('const-slider'), knobConst=$('knob-const'), knobTicksConst=$('knob-const-ticks');
   var inTotalTransp=$('total-transporte'), inTotalProveedor=$('total-proveedor');
+  var tbodyRecepcion=$('filas-recepcion'), inFechaRecepcion=$('fecha-recepcion');
+  var listaRegistros=$('lista-registros'), detalleFilas=$('detalle-filas');
 
   var filas = [];
+  var filasRecepcion = [];
   var KEY = 'vortex-v4';
 
   /* ---------- almacenamiento ---------- */
@@ -1035,7 +1183,7 @@ document.addEventListener('DOMContentLoaded', function(){
       localStorage.setItem(KEY, JSON.stringify({
         c:inCosto.value, t:inTransporte.value, f:inFactor.value,
         iva:chkIva.checked, psico:chkPsico.checked, r:selRedondeo.value,
-        obj:inObjetivo.value, filas:filas,
+        obj:inObjetivo.value, filas:filas, filasRecepcion:filasRecepcion, fechaRecepcion:inFechaRecepcion.value,
         cc:inCostoC.value, tc:inTransporteC.value, ivac:chkIvaC.checked, fc:rngConst.value,
         tt:inTotalTransp.value, tp:inTotalProveedor.value
       }));
@@ -1060,7 +1208,107 @@ document.addEventListener('DOMContentLoaded', function(){
       if(d.tt!=null) inTotalTransp.value=d.tt;
       if(d.tp!=null) inTotalProveedor.value=d.tp;
       if(Array.isArray(d.filas)) filas=d.filas;
+      if(Array.isArray(d.filasRecepcion)) filasRecepcion=d.filasRecepcion;
+      if(d.fechaRecepcion!=null) inFechaRecepcion.value=d.fechaRecepcion;
     }catch(e){}
+  }
+
+  /* ---------- recepciones: capa de persistencia separada de la interfaz -----------------------
+     Modelo de dos tablas, tal como se usaría en una base de datos real:
+       RECEPCIONES           { id, numero, fecha, creadoEn }
+       PRODUCTOS_RECEPCION   { id, recepcionId, producto, sku, proveedor, costo, valorCalculado }
+     Hoy ambas viven en localStorage bajo una sola clave. El día que exista una base de datos
+     real (Base44), solo hay que reemplazar cargarRecepciones()/guardarRecepcionesEnStorage() —
+     nada de la interfaz ni de guardarRecepcion()/guardarProductoRecepcion() necesita cambiar. */
+  var REC_KEY = 'vortex-recepciones-v1';
+  var recepciones = [];         // tabla RECEPCIONES
+  var productosRecepcion = [];  // tabla PRODUCTOS_RECEPCION
+  function cargarRecepciones(){
+    try{
+      var raw = localStorage.getItem(REC_KEY);
+      if(!raw) return;
+      var d = JSON.parse(raw);
+      if(Array.isArray(d.recepciones)) recepciones = d.recepciones;
+      if(Array.isArray(d.productos)) productosRecepcion = d.productos;
+    }catch(e){}
+  }
+  function guardarRecepcionesEnStorage(){
+    try{
+      localStorage.setItem(REC_KEY, JSON.stringify({recepciones:recepciones, productos:productosRecepcion}));
+    }catch(e){}
+  }
+  function fechaHoy(){
+    var d = new Date();
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    return dd+'/'+mm+'/'+d.getFullYear();
+  }
+  function hoyISO(){
+    var d = new Date();
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    return d.getFullYear()+'-'+mm+'-'+dd;
+  }
+  function formatearFechaISO(iso){
+    if(!iso) return '';
+    var p = iso.split('-');
+    if(p.length !== 3) return iso;
+    return p[2]+'/'+p[1]+'/'+p[0];
+  }
+  function nuevoId(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  }
+  // capa 2: un producto individual dentro de una recepción (nunca sobrescribe uno anterior)
+  function guardarProductoRecepcion(recepcionId, producto, proveedor, costo, valorCalculado){
+    var registro = {
+      id: nuevoId(), recepcionId: recepcionId,
+      producto: producto, sku: '', proveedor: proveedor || '',
+      costo: costo, valorCalculado: valorCalculado
+    };
+    productosRecepcion.push(registro);
+    return registro;
+  }
+  // capa 1: recibe la recepción completa (fecha + varias filas) desde la interfaz
+  function guardarRecepcion(fecha, filasAGuardar){
+    var validas = [];
+    filasAGuardar.forEach(function(f){
+      var costo = parsear(f.costo);
+      if(f.producto && isFinite(costo) && costo > 0) validas.push(f);
+    });
+    if(!validas.length) return null;
+
+    var recepcion = {
+      id: nuevoId(),
+      numero: recepciones.length + 1,
+      fecha: fecha || fechaHoy(),
+      creadoEn: new Date().toISOString()
+    };
+    recepciones.push(recepcion);
+    validas.forEach(function(f){
+      var costo = parsear(f.costo);
+      var r = precios(costo);
+      guardarProductoRecepcion(recepcion.id, f.producto, f.proveedor, costo, r ? r.final : null);
+    });
+    guardarRecepcionesEnStorage();
+    return recepcion;
+  }
+  function productosDe(recepcionId){
+    return productosRecepcion.filter(function(p){ return p.recepcionId === recepcionId; });
+  }
+  // consultas preparadas para un futuro historial de costos por producto
+  function obtenerHistorialProducto(nombreProducto){
+    var nombre = (nombreProducto||'').trim().toLowerCase();
+    return productosRecepcion
+      .filter(function(p){ return p.producto.trim().toLowerCase() === nombre; })
+      .map(function(p){
+        var rec = recepciones.filter(function(r){ return r.id === p.recepcionId; })[0];
+        return { fecha: rec ? rec.fecha : '', proveedor: p.proveedor, costo: p.costo, valorCalculado: p.valorCalculado };
+      })
+      .reverse();
+  }
+  function obtenerUltimoRegistro(nombreProducto){
+    var h = obtenerHistorialProducto(nombreProducto);
+    return h.length ? h[0] : null;
   }
 
   /* ---------- utilidades ---------- */
@@ -1406,6 +1654,128 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
+  /* ---------- recepción: mismo patrón que Lista de productos, más Proveedor ---------- */
+  function renderRecepcion(){
+    tbodyRecepcion.innerHTML = '';
+    $('vacio-recepcion').hidden = filasRecepcion.length > 0;
+    filasRecepcion.forEach(function(f, idx){
+      var tr = document.createElement('tr');
+
+      var tdN = document.createElement('td');
+      tdN.className = 'name';
+      var iN = document.createElement('input');
+      iN.type='text'; iN.value=f.producto||''; iN.placeholder='Producto';
+      iN.setAttribute('aria-label','Producto '+(idx+1));
+      iN.addEventListener('input', function(){ filasRecepcion[idx].producto=iN.value; guardar(); });
+      tdN.appendChild(iN); tr.appendChild(tdN);
+
+      var tdP = document.createElement('td');
+      tdP.className = 'name';
+      var iP = document.createElement('input');
+      iP.type='text'; iP.value=f.proveedor||''; iP.placeholder='Proveedor';
+      iP.setAttribute('aria-label','Proveedor del producto '+(idx+1));
+      iP.addEventListener('input', function(){ filasRecepcion[idx].proveedor=iP.value; guardar(); });
+      tdP.appendChild(iP); tr.appendChild(tdP);
+
+      var tdC = document.createElement('td');
+      tdC.className = 'cost';
+      var iC = document.createElement('input');
+      iC.type='text'; iC.inputMode='decimal'; iC.autocomplete='off';
+      iC.value = (f.costo===''||f.costo==null) ? '' : f.costo;
+      iC.placeholder='0';
+      iC.setAttribute('aria-label','Costo del producto '+(idx+1));
+      iC.addEventListener('input', function(){ filasRecepcion[idx].costo=iC.value; renderTotalesRecepcion(); guardar(); });
+      tdC.appendChild(iC); tr.appendChild(tdC);
+
+      var td=document.createElement('td');
+      var d=document.createElement('div');
+      d.className='cell'; d.dataset.i=idx;
+      td.appendChild(d); tr.appendChild(td);
+
+      var tdD=document.createElement('td');
+      tdD.className='del';
+      var b=document.createElement('button');
+      b.type='button'; b.innerHTML='&times;';
+      b.setAttribute('aria-label','Quitar producto '+(idx+1));
+      b.addEventListener('click', function(){ filasRecepcion.splice(idx,1); renderRecepcion(); guardar(); });
+      tdD.appendChild(b); tr.appendChild(tdD);
+
+      tbodyRecepcion.appendChild(tr);
+    });
+    renderTotalesRecepcion();
+  }
+  function renderTotalesRecepcion(){
+    var celdas = tbodyRecepcion.querySelectorAll('.cell');
+    Array.prototype.forEach.call(celdas, function(c){
+      var f = filasRecepcion[+c.dataset.i];
+      var costo = parsear(f && f.costo);
+      if(!isFinite(costo) || costo<=0){ c.textContent='—'; return; }
+      var r = precios(costo);
+      c.textContent = r ? '$'+fmt0.format(r.final) : '—';
+    });
+  }
+
+  /* ---------- recepción: sub-navegación Nueva recepción / Registros / Detalle ---------- */
+  function mostrarVistaRecepcion(vista){
+    $('vista-recepcion-nueva').hidden = (vista !== 'nueva');
+    $('vista-recepcion-registros').hidden = (vista !== 'registros');
+    $('vista-recepcion-detalle').hidden = (vista !== 'detalle');
+    // el sub-nav solo distingue entre Nueva recepción y Registros; el detalle cuelga de Registros
+    $('subtab-nueva').setAttribute('aria-selected', (vista === 'nueva') ? 'true' : 'false');
+    $('subtab-registros').setAttribute('aria-selected', (vista !== 'nueva') ? 'true' : 'false');
+  }
+  function renderRegistros(){
+    listaRegistros.innerHTML = '';
+    var ordenados = recepciones.slice().reverse(); // más reciente primero
+    $('registros-vacio').hidden = ordenados.length > 0;
+    ordenados.forEach(function(rec){
+      var productos = productosDe(rec.id);
+      var proveedores = [];
+      productos.forEach(function(p){
+        if(p.proveedor && proveedores.indexOf(p.proveedor) === -1) proveedores.push(p.proveedor);
+      });
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'registro-card';
+      b.innerHTML =
+        '<span>' +
+          '<span class="rc-titulo">Recepción #' + String(rec.numero).padStart(4,'0') + '</span><br>' +
+          '<span class="rc-meta">' + rec.fecha + ' · ' + productos.length + ' producto' + (productos.length===1?'':'s') +
+          (proveedores.length ? ' · ' + proveedores.join(', ') : '') + '</span>' +
+        '</span>' +
+        '<span class="rc-ir">Ver recepción →</span>';
+      b.addEventListener('click', function(){ abrirDetalleRecepcion(rec.id); });
+      listaRegistros.appendChild(b);
+    });
+  }
+  function abrirDetalleRecepcion(recepcionId){
+    var rec = recepciones.filter(function(r){ return r.id === recepcionId; })[0];
+    if(!rec) return;
+    $('detalle-titulo').textContent = 'Recepción #' + String(rec.numero).padStart(4,'0');
+    $('detalle-fecha').textContent = 'Fecha: ' + rec.fecha;
+    detalleFilas.innerHTML = '';
+    productosDe(rec.id).forEach(function(p){
+      var tr = document.createElement('tr');
+      var celdas = [
+        p.producto,
+        p.proveedor || '—',
+        '$' + fmt0.format(p.costo),
+        p.valorCalculado != null ? '$' + fmt0.format(p.valorCalculado) : '—'
+      ];
+      celdas.forEach(function(texto, i){
+        var td = document.createElement('td');
+        var div = document.createElement('div');
+        div.className = 'cell';
+        div.style.textAlign = i === 0 ? 'left' : 'right';
+        div.textContent = texto;
+        td.appendChild(div);
+        tr.appendChild(td);
+      });
+      detalleFilas.appendChild(tr);
+    });
+    mostrarVistaRecepcion('detalle');
+  }
+
   /* ---------- avisos y portapapeles ---------- */
   function toast(msg){
     var t=$('toast'); t.textContent=msg; t.classList.add('on');
@@ -1714,6 +2084,13 @@ document.addEventListener('DOMContentLoaded', function(){
     toast('✓ Sección reiniciada');
   }
   $('reset-general').addEventListener('click', resetGeneral);
+
+  // ver cálculo: oculta/muestra el desglose y la lista de productos
+  $('ver-calculo-btn').addEventListener('click', function(){
+    var detalle = $('calc-details');
+    var abierto = detalle.classList.toggle('open');
+    $('ver-calculo-btn').setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
   $('reset-const').addEventListener('click', resetConst);
   $('reset-transporte').addEventListener('click', resetTransporte);
 
@@ -1723,6 +2100,39 @@ document.addEventListener('DOMContentLoaded', function(){
     var ins = tbody.querySelectorAll('tr:last-child input');
     if(ins.length) ins[0].focus();
   });
+
+  // recepción
+  $('agregar-recepcion').addEventListener('click', function(){
+    filasRecepcion.push({producto:'', proveedor:'', costo:''});
+    renderRecepcion();
+    guardar();
+    var ins = tbodyRecepcion.querySelectorAll('tr:last-child input');
+    if(ins.length) ins[0].focus();
+  });
+  $('guardar-recepcion').addEventListener('click', function(){
+    var validas = filasRecepcion.filter(function(f){
+      var c = parsear(f.costo);
+      return f.producto && isFinite(c) && c > 0;
+    });
+    if(!validas.length){ toast('Agrega al menos un producto con costo antes de guardar.'); return; }
+    var fecha = formatearFechaISO(inFechaRecepcion.value) || fechaHoy();
+    var rec = guardarRecepcion(fecha, filasRecepcion);
+    filasRecepcion = [];
+    inFechaRecepcion.value = hoyISO();
+    renderRecepcion();
+    renderRegistros();
+    guardar();
+    toast('✓ Recepción #' + String(rec.numero).padStart(4,'0') + ' guardada (' + validas.length + ' productos)');
+  });
+  $('reset-recepcion').addEventListener('click', function(){
+    filasRecepcion = [];
+    renderRecepcion();
+    guardar();
+    toast('✓ Sección reiniciada');
+  });
+  $('subtab-nueva').addEventListener('click', function(){ mostrarVistaRecepcion('nueva'); });
+  $('subtab-registros').addEventListener('click', function(){ renderRegistros(); mostrarVistaRecepcion('registros'); });
+  $('volver-registros').addEventListener('click', function(){ mostrarVistaRecepcion('registros'); });
 
   $('copiar-factor').addEventListener('click', function(){
     var p=params();
@@ -1748,8 +2158,8 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // pestañas
-  var PANELES = {calc:'tab-calc', const:'tab-const', transporte:'tab-transporte'};
-  var BOTONES = {calc:'tab-btn-calc', const:'tab-btn-const', transporte:'tab-btn-transporte'};
+  var PANELES = {calc:'tab-calc', const:'tab-const', transporte:'tab-transporte', recepcion:'tab-recepcion'};
+  var BOTONES = {calc:'tab-btn-calc', const:'tab-btn-const', transporte:'tab-btn-transporte', recepcion:'tab-btn-recepcion'};
   function verPestana(cual){
     Object.keys(PANELES).forEach(function(k){
       $(PANELES[k]).hidden = (k !== cual);
@@ -1826,11 +2236,16 @@ document.addEventListener('DOMContentLoaded', function(){
   window.addEventListener('resize', ocultarTooltip);
 
   cargar();
+  cargarRecepciones();
   if(!filas.length) filas=[{nombre:'',costo:''},{nombre:'',costo:''},{nombre:'',costo:''}];
+  if(!inFechaRecepcion.value) inFechaRecepcion.value = hoyISO();
   rngConst.value = clampConst(parseFloat(rngConst.value));
   render();
   renderConst();
   renderTransporte();
+  renderRecepcion();
+  renderRegistros();
+  mostrarVistaRecepcion('nueva');
   verPestana('calc');
 })();
 </script>
