@@ -5,7 +5,10 @@ redondeo comercial hacia arriba, precio psicológico, precio objetivo (cálculo 
 lista de productos, el módulo **Material de Construcción** (factor bloqueado entre 0,75
 y 0,80), una calculadora auxiliar de **Transporte** (porcentaje a partir de dos facturas,
 con transferencia de un solo uso hacia General) y el módulo **Recepción** (registro de
-productos recibidos, agrupados por recepción, con historial consultable). Incluye una
+productos recibidos, agrupados por recepción, con historial consultable) y el módulo
+**Operaciones** (modal con operación libre y transformación de valores totales a valor
+unitario, con ajuste manual que conserva la diferencia entre valor calculado y valor
+final). Incluye una
 pantalla de acceso inicial con credenciales fijas (sin backend, sin base de datos: es
 solo una barrera visual).
 
@@ -20,7 +23,8 @@ sin rutas a assets externos; además se incluye el archivo original en
 
 No hay pestañas visibles. Los cuatro módulos (General, Material de Construcción,
 Transporte, Recepción) se abren exclusivamente mediante las burbujas negro mate con
-íconos rojos (tuerca, carretilla, camión, documento). En pantallas de 1300px de ancho o
+íconos rojos (tuerca, carretilla, camión, documento). La quinta burbuja (calculadora)
+abre Operaciones como un modal sobre la pantalla actual, sin cambiar de módulo. En pantallas de 1300px de ancho o
 más quedan fijas en una columna vertical a la izquierda; por debajo de ese ancho se
 muestran en una fila horizontal bajo la firma del desarrollador.
 

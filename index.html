@@ -243,19 +243,30 @@
 
   /* ---------- recepción: tarjetas de la lista de registros ---------- */
   .registro-card{
-    width:100%;text-align:left;font:inherit;color:inherit;
-    display:flex;justify-content:space-between;align-items:center;gap:12px;
-    padding:14px 18px;border-bottom:1px solid var(--rule);
-    background:transparent;border-left:0;border-right:0;border-top:0;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:0 18px;border-bottom:1px solid var(--rule);
   }
   .registro-card:last-child{border-bottom:0}
-  .registro-card:hover, .registro-card:focus-visible{background:var(--surface)}
-  .registro-card:focus-visible{outline:2px solid var(--red-1);outline-offset:-2px}
+  .registro-card .rc-info{
+    flex:1 1 auto;min-width:0;
+    width:100%;text-align:left;font:inherit;color:inherit;
+    background:transparent;border:0;cursor:pointer;padding:14px 0;
+  }
+  .registro-card .rc-info:hover, .registro-card .rc-info:focus-visible{background:var(--surface)}
+  .registro-card .rc-info:focus-visible{outline:2px solid var(--red-1);outline-offset:-2px}
   .registro-card .rc-titulo{
     font-family:"Zilla Slab",Georgia,serif;font-weight:700;font-size:.98rem;color:var(--ink);
   }
   .registro-card .rc-meta{font-size:.78rem;color:var(--ink-soft);margin-top:2px}
+  .registro-card .rc-actions{display:flex;align-items:center;gap:14px;flex:0 0 auto}
   .registro-card .rc-ir{color:var(--red-1);font-size:.8rem;font-weight:600;white-space:nowrap}
+  .registro-card .rc-eliminar{
+    font:inherit;font-size:.76rem;font-weight:600;
+    background:transparent;border:0;color:var(--ink-soft);
+    cursor:pointer;padding:6px 0;white-space:nowrap;
+  }
+  .registro-card .rc-eliminar:hover{color:var(--red-1)}
+  .registro-card .rc-eliminar:focus-visible{outline:2px solid var(--red-1);outline-offset:2px}
 
   /* ---------- recepción: encabezado del detalle ---------- */
   .detalle-encabezado{padding:2px 18px 14px}
@@ -538,6 +549,107 @@
   .toast.on{opacity:1}
   @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 
+  /* ---------- modal de confirmación (reemplaza confirm() nativo, bloqueado en el sandbox del artifact) ---------- */
+  .confirm-overlay{
+    position:fixed;inset:0;z-index:200;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.6);
+    padding:24px;
+  }
+  .confirm-overlay[hidden]{display:none}
+  .confirm-box{
+    width:100%;max-width:340px;
+    background:linear-gradient(180deg, var(--surface), var(--surface-2));
+    border:1px solid var(--rule);border-radius:2px;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+    box-shadow:0 20px 40px -16px rgba(0,0,0,.7);
+    padding:22px 20px;position:relative;overflow:hidden;
+  }
+  .confirm-box::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg, var(--red-2), transparent 65%);
+  }
+  .confirm-box p{margin:0 0 18px;color:var(--ink);font-size:.94rem;line-height:1.4}
+  .confirm-actions{display:flex;justify-content:flex-end;gap:10px}
+
+  /* ---------- modal de OPERACIONES: extensión funcional de VORTEX, no calculadora externa ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:180;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.62);
+    padding:20px;
+  }
+  .modal-overlay[hidden]{display:none}
+  .modal-box{
+    width:100%;max-width:380px;max-height:88vh;overflow-y:auto;
+    background:linear-gradient(180deg, var(--surface), var(--surface-2));
+    border:1px solid var(--rule);border-radius:2px;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+    box-shadow:0 24px 48px -16px rgba(0,0,0,.75);
+    position:relative;
+  }
+  .modal-box::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg, var(--red-2), transparent 65%);
+  }
+  .modal-head{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:16px 16px 0 18px;
+  }
+  .modal-head h2{
+    font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1rem;margin:0;
+    display:flex;align-items:center;gap:8px;color:var(--ink);
+  }
+  .modal-close{
+    width:28px;height:28px;border-radius:50%;flex:0 0 auto;
+    background:transparent;border:1px solid var(--rule-bright);color:var(--ink-soft);
+    font-size:1.1rem;line-height:1;cursor:pointer;
+  }
+  .modal-close:hover{border-color:var(--red-1);color:var(--red-1)}
+  .modal-close:focus-visible{outline:2px solid var(--red-1);outline-offset:2px}
+
+  .ops-body{padding:14px 18px 20px}
+  .ops-eyebrow{
+    font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red-1);margin:0 0 4px;
+  }
+  .ops-linea{
+    font-family:"Zilla Slab",Georgia,serif;font-size:1.05rem;color:var(--ink-soft);
+    text-align:right;min-height:1.3em;margin-bottom:12px;word-break:break-all;
+  }
+  .ops-resultado{
+    font-family:"Zilla Slab",Georgia,serif;font-weight:700;font-size:2.6rem;
+    color:var(--ink);text-align:right;letter-spacing:-.02em;line-height:1;
+    margin-bottom:16px;word-break:break-all;
+  }
+  .ops-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .ops-key{
+    font:inherit;font-family:"Zilla Slab",Georgia,serif;font-size:1.05rem;font-weight:600;
+    background:var(--surface-2);border:1px solid var(--rule-bright);color:var(--ink);
+    padding:12px 0;cursor:pointer;border-radius:2px;
+  }
+  .ops-key:hover{border-color:var(--red-1)}
+  .ops-key:focus-visible{outline:2px solid var(--red-1);outline-offset:2px}
+  .ops-key.op{color:var(--red-1)}
+  .ops-key.eq{
+    grid-column:span 2;
+    background:linear-gradient(90deg, var(--red-2), var(--red-1));
+    color:#fff;border-color:transparent;
+  }
+
+  .ops-unitario{text-align:center;padding:14px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:14px 0}
+  .ops-unitario .ops-eyebrow{text-align:center}
+  .ops-valor-unitario{
+    font-family:"Zilla Slab",Georgia,serif;font-weight:700;font-size:2.1rem;color:var(--ink);
+    margin:2px 0 0;letter-spacing:-.02em;
+  }
+  .ops-comparativa{display:flex;justify-content:space-between;gap:10px;padding:2px 0 14px;font-size:.86rem}
+  .ops-comparativa .lbl{display:block;color:var(--ink-soft);font-size:.72rem}
+  .ops-comparativa .val{font-family:"Zilla Slab",Georgia,serif;font-weight:600;color:var(--ink)}
+  .ops-quick-adj{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+  .ops-quick-adj .btn{padding:8px 4px;font-size:.78rem}
+  .ops-usar-precio{width:100%;justify-content:center;margin-top:16px}
+
   /* ---------- pantalla de acceso ---------- */
   .login-screen{
     position:fixed;inset:0;z-index:50;
@@ -678,7 +790,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="mark"><img src="data:image/webp;base64,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" alt="Isotipo VORTEX +"></div>
     <h1>VORTEX <span class="plus">+</span></h1>
     <p class="slogan">Con Vortex, más fácil... Siempre es posible.</p>
-    <p class="dev-credit">Desarrollado por Andrés Miquilena, CEO Vortex +</p>
+    <p class="dev-credit">Desarrollado por Andrés Miquilena, VORTEX + Founder</p>
 
     <div class="float-icons">
       <div class="float-icon-wrap pos-a">
@@ -699,6 +811,11 @@ document.addEventListener('DOMContentLoaded', function(){
       <div class="float-icon-wrap pos-d">
         <button type="button" class="float-icon" data-goto="recepcion" data-tip="RECEPCIÓN" aria-label="Ir a Recepción">
           <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7"/><path d="M9 16h7"/><path d="M9 8h3"/></svg>
+        </button>
+      </div>
+      <div class="float-icon-wrap pos-e">
+        <button type="button" class="float-icon" id="btn-operaciones" data-tip="OPERACIONES" aria-label="Abrir Operaciones" aria-haspopup="dialog">
+          <svg class="dash-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M7 7h10"/><path d="M7 12h3M7 16h3"/><path d="M14 12h3M14 16h3"/></svg>
         </button>
       </div>
     </div>
@@ -1151,6 +1268,115 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<div class="confirm-overlay" id="confirm-overlay" hidden>
+  <div class="confirm-box">
+    <p id="confirm-mensaje">¿Estás seguro?</p>
+    <div class="confirm-actions">
+      <button type="button" class="btn" id="confirm-cancelar">Cancelar</button>
+      <button type="button" class="btn primary" id="confirm-aceptar">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ops-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="ops-titulo">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="ops-titulo"><svg class="section-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M7 7h10"/><path d="M7 12h3M7 16h3"/><path d="M14 12h3M14 16h3"/></svg>OPERACIONES</h2>
+      <button type="button" class="modal-close" id="ops-cerrar" aria-label="Cerrar Operaciones">×</button>
+    </div>
+
+    <div class="subnav">
+      <button type="button" class="subnav-btn" id="ops-tab-libre" aria-selected="true">Operación libre</button>
+      <button type="button" class="subnav-btn" id="ops-tab-transformar" aria-selected="false">Transformar valor</button>
+    </div>
+
+    <div id="ops-vista-libre" class="ops-body">
+      <div class="ops-eyebrow">Operación</div>
+      <div class="ops-linea" id="ops-linea">0</div>
+      <div class="ops-eyebrow">Resultado</div>
+      <div class="ops-resultado" id="ops-resultado">0</div>
+      <div class="ops-grid">
+        <button type="button" class="ops-key" data-k="C">C</button>
+        <button type="button" class="ops-key" data-k="back">⌫</button>
+        <button type="button" class="ops-key" data-k="%">%</button>
+        <button type="button" class="ops-key op" data-k="÷">÷</button>
+        <button type="button" class="ops-key" data-k="7">7</button>
+        <button type="button" class="ops-key" data-k="8">8</button>
+        <button type="button" class="ops-key" data-k="9">9</button>
+        <button type="button" class="ops-key op" data-k="×">×</button>
+        <button type="button" class="ops-key" data-k="4">4</button>
+        <button type="button" class="ops-key" data-k="5">5</button>
+        <button type="button" class="ops-key" data-k="6">6</button>
+        <button type="button" class="ops-key op" data-k="−">−</button>
+        <button type="button" class="ops-key" data-k="1">1</button>
+        <button type="button" class="ops-key" data-k="2">2</button>
+        <button type="button" class="ops-key" data-k="3">3</button>
+        <button type="button" class="ops-key op" data-k="+">+</button>
+        <button type="button" class="ops-key" data-k="0">0</button>
+        <button type="button" class="ops-key" data-k=",">,</button>
+        <button type="button" class="ops-key eq" data-k="=">=</button>
+      </div>
+    </div>
+
+    <div id="ops-vista-transformar" class="ops-body" hidden>
+      <button type="button" class="btn" id="ops-usar-calculado">Usar valor calculado de General</button>
+
+      <div class="line">
+        <label for="ops-valor-partida">Valor de partida</label>
+        <span class="leader"></span>
+        <span class="field"><span class="unit">$</span><input type="text" id="ops-valor-partida" inputmode="decimal" autocomplete="off" value="48000"></span>
+      </div>
+      <div class="line">
+        <label for="ops-cantidad">Cantidad</label>
+        <span class="leader"></span>
+        <span class="field"><input type="text" id="ops-cantidad" inputmode="decimal" autocomplete="off" value="12"></span>
+      </div>
+      <div class="line">
+        <label for="ops-unidad">Unidad</label>
+        <span class="leader"></span>
+        <span class="field">
+          <select id="ops-unidad">
+            <option value="unidad">unidad</option>
+            <option value="caja">caja</option>
+            <option value="pack">pack</option>
+            <option value="docena">docena</option>
+            <option value="kilo">kilo</option>
+            <option value="metro">metro</option>
+            <option value="otro">otro</option>
+          </select>
+        </span>
+      </div>
+
+      <div class="ops-unitario">
+        <p class="ops-eyebrow" id="ops-formula-unitario">$48.000 ÷ 12</p>
+        <p class="ops-valor-unitario" id="ops-valor-unitario">$4.000</p>
+      </div>
+
+      <div class="ops-comparativa">
+        <div><span class="lbl">Valor calculado</span><span class="val" id="ops-cmp-calculado">$4.000</span></div>
+        <div><span class="lbl">Ajuste</span><span class="val" id="ops-cmp-ajuste">+$0</span></div>
+      </div>
+
+      <p class="ops-eyebrow">Ajustar valor</p>
+      <div class="ops-quick-adj">
+        <button type="button" class="btn" data-adj="-100">− $100</button>
+        <button type="button" class="btn" data-adj="-50">− $50</button>
+        <button type="button" class="btn" data-adj="50">+ $50</button>
+        <button type="button" class="btn" data-adj="100">+ $100</button>
+      </div>
+
+      <div class="line">
+        <label for="ops-valor-final">Valor final</label>
+        <span class="leader"></span>
+        <span class="field"><span class="unit">$</span><input type="text" id="ops-valor-final" inputmode="decimal" autocomplete="off"></span>
+      </div>
+
+      <button type="button" class="btn primary ops-usar-precio" id="ops-usar-precio">Usar este precio</button>
+      <p class="note" id="ops-nota">Copia el valor final al portapapeles para usarlo donde lo necesites dentro de VORTEX.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   var fmt0 = new Intl.NumberFormat('es-CL',{maximumFractionDigits:0});
@@ -1217,12 +1443,15 @@ document.addEventListener('DOMContentLoaded', function(){
      Modelo de dos tablas, tal como se usaría en una base de datos real:
        RECEPCIONES           { id, numero, fecha, creadoEn }
        PRODUCTOS_RECEPCION   { id, recepcionId, producto, sku, proveedor, costo, valorCalculado }
-     Hoy ambas viven en localStorage bajo una sola clave. El día que exista una base de datos
-     real (Base44), solo hay que reemplazar cargarRecepciones()/guardarRecepcionesEnStorage() —
-     nada de la interfaz ni de guardarRecepcion()/guardarProductoRecepcion() necesita cambiar. */
+     localStorage funciona como caché local instantánea (y como único respaldo cuando la app
+     corre fuera de claude.ai, por ejemplo desplegada en Vercel). Cuando la plataforma expone
+     la capacidad "db" (persistente de verdad, sobrevive cierres de página), la usamos como
+     fuente confiable adicional: guardarRecepcion()/guardarProductoRecepcion()/eliminarRecepcion()
+     escriben en ambos lugares; nada de la interfaz necesita saber cuál está disponible. */
   var REC_KEY = 'vortex-recepciones-v1';
   var recepciones = [];         // tabla RECEPCIONES
   var productosRecepcion = [];  // tabla PRODUCTOS_RECEPCION
+  var dbCap = null;             // capacidad "db" de la plataforma, si esta vista la concede
   function cargarRecepciones(){
     try{
       var raw = localStorage.getItem(REC_KEY);
@@ -1236,6 +1465,42 @@ document.addEventListener('DOMContentLoaded', function(){
     try{
       localStorage.setItem(REC_KEY, JSON.stringify({recepciones:recepciones, productos:productosRecepcion}));
     }catch(e){}
+  }
+  // capacidad "db": se conecta en segundo plano; si no existe (p. ej. fuera de claude.ai)
+  // o esta vista no la tiene concedida, la app sigue funcionando solo con localStorage.
+  function inicializarDb(){
+    if(typeof window.claude === 'undefined' || !window.claude || typeof window.claude.use !== 'function') return;
+    window.claude.use('db').then(function(d){
+      if(!d) return;
+      dbCap = d;
+      sincronizarRecepcionesDesdeDb();
+    }).catch(function(){});
+  }
+  function sincronizarRecepcionesDesdeDb(){
+    if(!dbCap) return;
+    Promise.all([
+      dbCap.collection('recepciones').get(),
+      dbCap.collection('productos_recepcion').get()
+    ]).then(function(resultados){
+      var docsRec = resultados[0].docs, docsProd = resultados[1].docs;
+      if(docsRec.length || docsProd.length){
+        recepciones = docsRec.map(function(s){ var v = s.data()||{}; v.id = s.id; return v; });
+        productosRecepcion = docsProd.map(function(s){ var v = s.data()||{}; v.id = s.id; return v; });
+        guardarRecepcionesEnStorage();
+        renderRegistros();
+      }else if(recepciones.length || productosRecepcion.length){
+        // hay datos locales pero la nube está vacía (primera vez con db disponible): los subimos
+        recepciones.forEach(function(r){
+          dbCap.collection('recepciones').doc(r.id).set({numero:r.numero, fecha:r.fecha, creadoEn:r.creadoEn}).catch(function(){});
+        });
+        productosRecepcion.forEach(function(p){
+          dbCap.collection('productos_recepcion').doc(p.id).set({
+            recepcionId:p.recepcionId, producto:p.producto, sku:p.sku||'',
+            proveedor:p.proveedor||'', costo:p.costo, valorCalculado:p.valorCalculado
+          }).catch(function(){});
+        });
+      }
+    }).catch(function(){});
   }
   function fechaHoy(){
     var d = new Date();
@@ -1266,6 +1531,12 @@ document.addEventListener('DOMContentLoaded', function(){
       costo: costo, valorCalculado: valorCalculado
     };
     productosRecepcion.push(registro);
+    if(dbCap){
+      dbCap.collection('productos_recepcion').doc(registro.id).set({
+        recepcionId: registro.recepcionId, producto: registro.producto, sku: registro.sku,
+        proveedor: registro.proveedor, costo: registro.costo, valorCalculado: registro.valorCalculado
+      }).catch(function(){});
+    }
     return registro;
   }
   // capa 1: recibe la recepción completa (fecha + varias filas) desde la interfaz
@@ -1284,6 +1555,11 @@ document.addEventListener('DOMContentLoaded', function(){
       creadoEn: new Date().toISOString()
     };
     recepciones.push(recepcion);
+    if(dbCap){
+      dbCap.collection('recepciones').doc(recepcion.id).set({
+        numero: recepcion.numero, fecha: recepcion.fecha, creadoEn: recepcion.creadoEn
+      }).catch(function(){});
+    }
     validas.forEach(function(f){
       var costo = parsear(f.costo);
       var r = precios(costo);
@@ -1294,6 +1570,19 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   function productosDe(recepcionId){
     return productosRecepcion.filter(function(p){ return p.recepcionId === recepcionId; });
+  }
+  // elimina una recepción completa y todos sus productos asociados; no toca las demás
+  function eliminarRecepcion(recepcionId){
+    var productosAEliminar = productosDe(recepcionId);
+    recepciones = recepciones.filter(function(r){ return r.id !== recepcionId; });
+    productosRecepcion = productosRecepcion.filter(function(p){ return p.recepcionId !== recepcionId; });
+    guardarRecepcionesEnStorage();
+    if(dbCap){
+      dbCap.collection('recepciones').doc(recepcionId).delete().catch(function(){});
+      productosAEliminar.forEach(function(p){
+        dbCap.collection('productos_recepcion').doc(p.id).delete().catch(function(){});
+      });
+    }
   }
   // consultas preparadas para un futuro historial de costos por producto
   function obtenerHistorialProducto(nombreProducto){
@@ -1734,18 +2023,40 @@ document.addEventListener('DOMContentLoaded', function(){
       productos.forEach(function(p){
         if(p.proveedor && proveedores.indexOf(p.proveedor) === -1) proveedores.push(p.proveedor);
       });
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'registro-card';
-      b.innerHTML =
-        '<span>' +
-          '<span class="rc-titulo">Recepción #' + String(rec.numero).padStart(4,'0') + '</span><br>' +
-          '<span class="rc-meta">' + rec.fecha + ' · ' + productos.length + ' producto' + (productos.length===1?'':'s') +
-          (proveedores.length ? ' · ' + proveedores.join(', ') : '') + '</span>' +
-        '</span>' +
-        '<span class="rc-ir">Ver recepción →</span>';
-      b.addEventListener('click', function(){ abrirDetalleRecepcion(rec.id); });
-      listaRegistros.appendChild(b);
+
+      var card = document.createElement('div');
+      card.className = 'registro-card';
+
+      var info = document.createElement('button');
+      info.type = 'button';
+      info.className = 'rc-info';
+      info.innerHTML =
+        '<span class="rc-titulo">Recepción #' + String(rec.numero).padStart(4,'0') + '</span><br>' +
+        '<span class="rc-meta">' + rec.fecha + ' · ' + productos.length + ' producto' + (productos.length===1?'':'s') +
+        (proveedores.length ? ' · ' + proveedores.join(', ') : '') + '</span>';
+      info.addEventListener('click', function(){ abrirDetalleRecepcion(rec.id); });
+
+      var acciones = document.createElement('span');
+      acciones.className = 'rc-actions';
+      acciones.innerHTML = '<span class="rc-ir">Ver recepción →</span>';
+
+      var elim = document.createElement('button');
+      elim.type = 'button';
+      elim.className = 'rc-eliminar';
+      elim.textContent = 'Eliminar';
+      elim.setAttribute('aria-label', 'Eliminar recepción #' + String(rec.numero).padStart(4,'0'));
+      elim.addEventListener('click', function(){
+        pedirConfirmacion('¿Estás seguro de que deseas eliminar esta recepción?', function(){
+          eliminarRecepcion(rec.id);
+          renderRegistros();
+          toast('✓ Recepción eliminada');
+        });
+      });
+      acciones.appendChild(elim);
+
+      card.appendChild(info);
+      card.appendChild(acciones);
+      listaRegistros.appendChild(card);
     });
   }
   function abrirDetalleRecepcion(recepcionId){
@@ -1781,6 +2092,32 @@ document.addEventListener('DOMContentLoaded', function(){
     var t=$('toast'); t.textContent=msg; t.classList.add('on');
     clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove('on'); },2200);
   }
+  // modal de confirmación propio: los artifacts corren en un iframe con sandbox que
+  // bloquea window.confirm()/alert()/prompt(), así que no podemos depender de ellos.
+  var confirmCallback = null;
+  function pedirConfirmacion(mensaje, callback){
+    $('confirm-mensaje').textContent = mensaje;
+    confirmCallback = callback;
+    $('confirm-overlay').hidden = false;
+    $('confirm-aceptar').focus();
+  }
+  function cerrarConfirmacion(){
+    $('confirm-overlay').hidden = true;
+    confirmCallback = null;
+  }
+  $('confirm-cancelar').addEventListener('click', cerrarConfirmacion);
+  $('confirm-aceptar').addEventListener('click', function(){
+    var cb = confirmCallback;
+    cerrarConfirmacion();
+    if(cb) cb();
+  });
+  $('confirm-overlay').addEventListener('click', function(e){
+    if(e.target === $('confirm-overlay')) cerrarConfirmacion();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !$('confirm-overlay').hidden) cerrarConfirmacion();
+  });
+
   function copiar(texto, msg){
     var ok=false;
     try{
@@ -2177,6 +2514,7 @@ document.addEventListener('DOMContentLoaded', function(){
   Array.prototype.forEach.call(document.querySelectorAll('.float-icon'), function(btn){
     btn.addEventListener('click', function(){
       var destino = btn.getAttribute('data-goto');
+      if(!destino) return; // burbujas sin navegación propia (p. ej. Operaciones) manejan su propio click aparte
       verPestana(destino);
       if(destino === 'const') renderConst();
       if(destino === 'transporte') renderTransporte();
@@ -2235,8 +2573,248 @@ document.addEventListener('DOMContentLoaded', function(){
   window.addEventListener('scroll', ocultarTooltip, {passive:true});
   window.addEventListener('resize', ocultarTooltip);
 
+  /* ---------- OPERACIONES: extensión funcional de VORTEX (modal, no navega de pestaña) ---------- */
+  var opsOverlay = $('ops-overlay');
+  var opsLinea = $('ops-linea'), opsResultado = $('ops-resultado');
+  var opsAbierto = false;
+
+  function abrirOperaciones(){
+    ocultarTooltip();
+    opsOverlay.hidden = false;
+    opsAbierto = true;
+    reiniciarOperacionLibre();
+    renderTransformar(false);
+    $('ops-cerrar').focus();
+  }
+  function cerrarOperaciones(){
+    opsOverlay.hidden = true;
+    opsAbierto = false;
+  }
+  $('btn-operaciones').addEventListener('click', abrirOperaciones);
+  $('ops-cerrar').addEventListener('click', cerrarOperaciones);
+  opsOverlay.addEventListener('click', function(e){ if(e.target === opsOverlay) cerrarOperaciones(); });
+
+  function mostrarVistaOps(vista){
+    $('ops-vista-libre').hidden = (vista !== 'libre');
+    $('ops-vista-transformar').hidden = (vista !== 'transformar');
+    $('ops-tab-libre').setAttribute('aria-selected', (vista === 'libre') ? 'true' : 'false');
+    $('ops-tab-transformar').setAttribute('aria-selected', (vista === 'transformar') ? 'true' : 'false');
+  }
+  $('ops-tab-libre').addEventListener('click', function(){ mostrarVistaOps('libre'); });
+  $('ops-tab-transformar').addEventListener('click', function(){ mostrarVistaOps('transformar'); });
+
+  /* --- operación libre: motor de calculadora simple, sin eval(), reutiliza parsear() --- */
+  var fmtLibre = new Intl.NumberFormat('es-CL',{maximumFractionDigits:4});
+  var opsAcumulado = null, opsOperadorPendiente = null, opsActual = '0';
+  var opsEsperandoSiguiente = false, opsEscribiendo = false;
+  function opsAplicar(a, op, b){
+    if(op === '+') return a + b;
+    if(op === '−') return a - b;
+    if(op === '×') return a * b;
+    if(op === '÷') return b !== 0 ? a / b : NaN;
+    return b;
+  }
+  function opsFormatoNumero(n){
+    if(!isFinite(n)) return 'Error';
+    return fmtLibre.format(Math.round(n * 1e8) / 1e8);
+  }
+  // número -> texto con coma decimal, re-interpretable de forma segura por parsear()
+  function opsANumeroTexto(n){
+    if(!isFinite(n)) return 'NaN';
+    var r = Math.round(n * 1e8) / 1e8;
+    var t = String(r);
+    if(t.indexOf('e') > -1) t = r.toFixed(8);
+    return t.replace('.', ',');
+  }
+  function opsMostrarActual(){
+    if(opsEscribiendo){
+      var partes = opsActual.split(',');
+      var ent = partes[0].replace(/\D/g,'') || '0';
+      var txt = fmt0.format(parseInt(ent, 10));
+      return partes.length > 1 ? txt + ',' + partes[1] : txt;
+    }
+    return opsFormatoNumero(parsear(opsActual));
+  }
+  function actualizarPantallaLibre(){
+    opsLinea.textContent = opsAcumulado != null
+      ? opsFormatoNumero(opsAcumulado) + ' ' + (opsOperadorPendiente || '')
+      : '';
+    opsResultado.textContent = opsMostrarActual();
+  }
+  function reiniciarOperacionLibre(){
+    opsAcumulado = null; opsOperadorPendiente = null; opsActual = '0';
+    opsEsperandoSiguiente = false; opsEscribiendo = false;
+    actualizarPantallaLibre();
+  }
+  function opsPulsarDigito(d){
+    if(opsEsperandoSiguiente || !opsEscribiendo){
+      opsActual = (d === ',' ? '0,' : d);
+      opsEsperandoSiguiente = false; opsEscribiendo = true;
+    }else if(d === ',' && opsActual.indexOf(',') > -1){
+      /* ya hay una coma: se ignora */
+    }else if(opsActual === '0' && d !== ','){
+      opsActual = d;
+    }else{
+      opsActual += d;
+    }
+    actualizarPantallaLibre();
+  }
+  function opsPulsarOperador(op){
+    var actualNum = parsear(opsActual);
+    if(!isFinite(actualNum)) actualNum = 0;
+    if(opsAcumulado == null){
+      opsAcumulado = actualNum;
+    }else if(!opsEsperandoSiguiente){
+      opsAcumulado = opsAplicar(opsAcumulado, opsOperadorPendiente, actualNum);
+    }
+    opsOperadorPendiente = op;
+    opsEsperandoSiguiente = true; opsEscribiendo = false;
+    opsActual = opsANumeroTexto(opsAcumulado);
+    actualizarPantallaLibre();
+  }
+  function opsPulsarPorcentaje(){
+    if(opsEsperandoSiguiente) return;
+    var actualNum = parsear(opsActual);
+    if(!isFinite(actualNum)) return;
+    var resultado = (opsAcumulado != null && (opsOperadorPendiente === '+' || opsOperadorPendiente === '−'))
+      ? opsAcumulado * (actualNum / 100)   // "100.000 − 15%" = 15% de 100.000
+      : actualNum / 100;
+    opsActual = opsANumeroTexto(resultado);
+    opsEscribiendo = false;
+    actualizarPantallaLibre();
+  }
+  function opsPulsarIgual(){
+    if(opsAcumulado == null || !opsOperadorPendiente || opsEsperandoSiguiente) return;
+    var b = parsear(opsActual);
+    if(!isFinite(b)) b = 0;
+    var resultado = opsAplicar(opsAcumulado, opsOperadorPendiente, b);
+    opsLinea.textContent = opsFormatoNumero(opsAcumulado) + ' ' + opsOperadorPendiente + ' ' + opsFormatoNumero(b) + ' =';
+    opsActual = opsANumeroTexto(resultado);
+    opsAcumulado = null; opsOperadorPendiente = null;
+    opsEsperandoSiguiente = true; opsEscribiendo = false;
+    opsResultado.textContent = opsMostrarActual();
+  }
+  function opsPulsarBorrar(){
+    if(!opsEscribiendo) return; // un resultado ya calculado se limpia con C
+    opsActual = opsActual.length > 1 ? opsActual.slice(0, -1) : '0';
+    actualizarPantallaLibre();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.ops-key'), function(btn){
+    btn.addEventListener('click', function(){
+      var k = btn.getAttribute('data-k');
+      if(k === 'C') reiniciarOperacionLibre();
+      else if(k === 'back') opsPulsarBorrar();
+      else if(k === '%') opsPulsarPorcentaje();
+      else if(k === '=') opsPulsarIgual();
+      else if(k === '+' || k === '−' || k === '×' || k === '÷') opsPulsarOperador(k);
+      else opsPulsarDigito(k);
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(!opsAbierto) return;
+    if(e.key === 'Escape'){
+      if(!$('confirm-overlay').hidden) return;
+      cerrarOperaciones(); return;
+    }
+    if($('ops-vista-libre').hidden) return; // el teclado solo aplica a Operación libre
+    if(/^[0-9]$/.test(e.key)){ opsPulsarDigito(e.key); e.preventDefault(); }
+    else if(e.key === ',' || e.key === '.'){ opsPulsarDigito(','); e.preventDefault(); }
+    else if(e.key === '+'){ opsPulsarOperador('+'); e.preventDefault(); }
+    else if(e.key === '-'){ opsPulsarOperador('−'); e.preventDefault(); }
+    else if(e.key === '*' || e.key === 'x' || e.key === 'X'){ opsPulsarOperador('×'); e.preventDefault(); }
+    else if(e.key === '/'){ opsPulsarOperador('÷'); e.preventDefault(); }
+    else if(e.key === '%'){ opsPulsarPorcentaje(); e.preventDefault(); }
+    else if(e.key === 'Enter' || e.key === '='){ opsPulsarIgual(); e.preventDefault(); }
+    else if(e.key === 'Backspace'){ opsPulsarBorrar(); e.preventDefault(); }
+    else if(e.key === 'c' || e.key === 'C'){ reiniciarOperacionLibre(); e.preventDefault(); }
+  });
+
+  /* --- transformar valor: valor de partida ÷ cantidad = valor calculado; luego ajuste = valor final ---
+     Se mantienen separados: valorCalculado (lo que produjo la matemática) y valorFinal (lo que decide
+     el usuario). El valor final sugerido sigue las reglas de redondeo de VORTEX (redondear()). */
+  var inOpsPartida = $('ops-valor-partida'), inOpsCantidad = $('ops-cantidad'), inOpsFinal = $('ops-valor-final');
+  var opsValorCalculado = 0;
+  var opsUltimoUso = null; // { valorPartida, cantidad, unidad, valorCalculado, ajuste, valorFinal } — listo para un futuro historial
+  function fmtExacto(n){
+    return Math.abs(n - Math.round(n)) < 1e-9 ? fmt0.format(Math.round(n)) : fmt2.format(n);
+  }
+  function calcularUnitario(){
+    var partida = parsear(inOpsPartida.value);
+    var cantidad = parsear(inOpsCantidad.value);
+    if(!isFinite(partida) || partida <= 0 || !isFinite(cantidad) || cantidad <= 0) return null;
+    return partida / cantidad;
+  }
+  function actualizarComparativaAjuste(){
+    var finalVal = parsear(inOpsFinal.value);
+    if(!isFinite(finalVal)){ $('ops-cmp-ajuste').textContent = '—'; return; }
+    var ajuste = finalVal - opsValorCalculado;
+    $('ops-cmp-ajuste').textContent = (ajuste >= 0 ? '+' : '−') + '$' + fmtExacto(Math.abs(ajuste));
+  }
+  function renderTransformar(reiniciarFinal){
+    var unitario = calcularUnitario();
+    if(unitario == null){
+      $('ops-formula-unitario').textContent = 'Completa valor de partida y cantidad';
+      $('ops-valor-unitario').textContent = '—';
+      $('ops-cmp-calculado').textContent = '—';
+      $('ops-cmp-ajuste').textContent = '—';
+      return;
+    }
+    opsValorCalculado = unitario;
+    var unidad = $('ops-unidad').value;
+    $('ops-formula-unitario').textContent = '$' + fmtExacto(parsear(inOpsPartida.value)) + ' ÷ ' +
+      fmtExacto(parsear(inOpsCantidad.value)) + (unidad !== 'unidad' ? ' · ' + unidad : '');
+    $('ops-valor-unitario').textContent = '$' + fmtExacto(unitario);
+    $('ops-cmp-calculado').textContent = '$' + fmtExacto(unitario);
+    if(reiniciarFinal === true || !inOpsFinal.value){
+      inOpsFinal.value = String(redondear(unitario, chkPsico.checked));
+    }
+    actualizarComparativaAjuste();
+  }
+  [inOpsPartida, inOpsCantidad].forEach(function(el){
+    el.addEventListener('input', function(){ renderTransformar(true); });
+  });
+  $('ops-unidad').addEventListener('change', function(){ renderTransformar(false); });
+  inOpsFinal.addEventListener('input', actualizarComparativaAjuste);
+
+  $('ops-usar-calculado').addEventListener('click', function(){
+    var costo = num(inCosto);
+    var r = (isFinite(costo) && costo > 0) ? precios(costo) : null;
+    if(!r){ toast('Completa el costo en General primero.'); return; }
+    inOpsPartida.value = String(r.final);
+    renderTransformar(true);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-adj]'), function(btn){
+    btn.addEventListener('click', function(){
+      var delta = parseFloat(btn.getAttribute('data-adj'));
+      var actual = parsear(inOpsFinal.value);
+      if(!isFinite(actual)) actual = opsValorCalculado;
+      inOpsFinal.value = opsANumeroTexto(Math.max(0, actual + delta));
+      actualizarComparativaAjuste();
+    });
+  });
+
+  $('ops-usar-precio').addEventListener('click', function(){
+    var finalVal = parsear(inOpsFinal.value);
+    if(calcularUnitario() == null || !isFinite(finalVal) || finalVal <= 0){
+      toast('Completa los datos y un valor final válido.'); return;
+    }
+    opsUltimoUso = {
+      valorPartida: parsear(inOpsPartida.value),
+      cantidad: parsear(inOpsCantidad.value),
+      unidad: $('ops-unidad').value,
+      valorCalculado: opsValorCalculado,
+      ajuste: finalVal - opsValorCalculado,
+      valorFinal: finalVal
+    };
+    copiar('$' + fmtExacto(finalVal), '✓ Valor final copiado: $' + fmtExacto(finalVal));
+    $('ops-nota').textContent = 'Valor final en uso: $' + fmtExacto(finalVal) +
+      ' (calculado $' + fmtExacto(opsValorCalculado) + ') — pégalo donde lo necesites dentro de VORTEX.';
+  });
+
   cargar();
   cargarRecepciones();
+  inicializarDb();
   if(!filas.length) filas=[{nombre:'',costo:''},{nombre:'',costo:''},{nombre:'',costo:''}];
   if(!inFechaRecepcion.value) inFechaRecepcion.value = hoyISO();
   rngConst.value = clampConst(parseFloat(rngConst.value));
